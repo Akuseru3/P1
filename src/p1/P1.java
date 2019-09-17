@@ -16,6 +16,7 @@ public class P1 {
      */
     public static void main(String[] args) {
         //uwu
+        //awoawoawoawoawoawoawo
        ConfigWindow window = new ConfigWindow();
        window.setVisible(true);
     }
