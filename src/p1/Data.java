@@ -43,21 +43,30 @@ public class Data {
     
     public void dataFromFiles(List<String[]> data) throws IOException{
         executedFiles = data;
+        int sizeOfMemory = memory;int sizeOfHardMemory = hardDMemory;
         for(int i=0;i<data.size();i++){
             ArrayList<String> newFile = new ArrayList<String>();
             String[] actual= data.get(i);
             Path path = Paths.get(actual[2]);
             List<String> content = Files.readAllLines(path, StandardCharsets.UTF_8);
+            sizeOfMemory = sizeOfMemory-content.size();
+            if(sizeOfMemory<=0){
+                sizeOfHardMemory= sizeOfHardMemory-content.size();
+            }
             for(int j=0;j<content.size();j++){
                 newFile.add(content.get(j));
-                if(memoryData.size()<memory){
-                    memoryData.add(content.get(j));
-                }else if(hardDData.size()<hardDMemory){
+                /*System.out.println("Espacio en memoria: "+(sizeOfMemory));
+                System.out.println("Espacio en memoria: "+(sizeOfHardMemory));
+                System.out.println("Valor actual: "+(content.size()));*/
+                if((sizeOfMemory)>=(0)){
+                    memoryData.add(content.get(j));                    
+                }else if((sizeOfHardMemory)>=(0)){
                     hardDData.add(content.get(j));
                 }else{
                     System.out.println("no more");
                     break;                    
                 }
+                
             }
             allData.add(newFile);
             

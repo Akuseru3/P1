@@ -84,8 +84,8 @@ public class ConfigWindow extends javax.swing.JFrame {
 
         jLabel3.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
         jLabel3.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel3.setText("Tamaño de Disco");
-        getContentPane().add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(780, 300, -1, -1));
+        jLabel3.setText("Tamaño de Memoria Virtual");
+        getContentPane().add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(670, 310, -1, -1));
 
         jLabel2.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
         jLabel2.setForeground(new java.awt.Color(255, 255, 255));
@@ -140,10 +140,13 @@ public class ConfigWindow extends javax.swing.JFrame {
             }
             int memorySize = Integer.parseInt(txtRam.getText());
             int hardDSize = Integer.parseInt(txtHDD.getText());
+            if(memorySize>0 && hardDSize>0 && hardDSize<=1024){
+                this.dispose();
+                mainWindow window = new mainWindow(memorySize,hardDSize,values);
+                window.setVisible(true);
+            }
             
-            this.dispose();
-            mainWindow window = new mainWindow(memorySize,hardDSize,values);
-            window.setVisible(true);
+            
         }catch(Exception e){
                 JOptionPane.showMessageDialog(null, "Ingrese numeros validos");
             }
