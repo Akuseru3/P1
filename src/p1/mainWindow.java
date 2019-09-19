@@ -23,7 +23,9 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
 
 /**
@@ -35,6 +37,9 @@ public class mainWindow extends javax.swing.JFrame {
     int y1=0,y2=160;
     int memory;int hardDMemory;
     ArrayList<Integer> values = new ArrayList<Integer>();
+    Data dataManagment;
+    Nucleo nucleo1;
+    Nucleo nucleo2;
             
     /**
      * Creates new form mainWindow
@@ -48,6 +53,8 @@ public class mainWindow extends javax.swing.JFrame {
         memory=valueMemory;
         hardDMemory = valueMemory2;
         values = list;
+        nucleo1 = new Nucleo("En Espera",0);
+        nucleo2 = new Nucleo("En Espera",0);
     }
 
     /**
@@ -69,7 +76,7 @@ public class mainWindow extends javax.swing.JFrame {
         jScrollPane7 = new javax.swing.JScrollPane();
         jTable3 = new javax.swing.JTable();
         jScrollPane5 = new javax.swing.JScrollPane();
-        jTable2 = new javax.swing.JTable();
+        Nucleo1 = new javax.swing.JTable();
         jScrollPane4 = new javax.swing.JScrollPane();
         txtKeyboard = new javax.swing.JTextArea();
         jScrollPane2 = new javax.swing.JScrollPane();
@@ -91,6 +98,10 @@ public class mainWindow extends javax.swing.JFrame {
         workQueue2List = new javax.swing.JList<>();
         jScrollPane3 = new javax.swing.JScrollPane();
         filesTable = new javax.swing.JTable();
+        lbTiempoN2 = new javax.swing.JLabel();
+        lbCursoN2 = new javax.swing.JLabel();
+        lbCursoN1 = new javax.swing.JLabel();
+        lbTiempoN1 = new javax.swing.JLabel();
         lblBackground = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -137,19 +148,22 @@ public class mainWindow extends javax.swing.JFrame {
         ));
         jScrollPane7.setViewportView(jTable3);
 
-        getContentPane().add(jScrollPane7, new org.netbeans.lib.awtextra.AbsoluteConstraints(740, 590, 480, 50));
+        getContentPane().add(jScrollPane7, new org.netbeans.lib.awtextra.AbsoluteConstraints(750, 640, 480, 60));
 
-        jTable2.setModel(new javax.swing.table.DefaultTableModel(
+        Nucleo1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null}
+
             },
             new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
+
             }
         ));
-        jScrollPane5.setViewportView(jTable2);
+        Nucleo1.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
+        Nucleo1.setRowSelectionAllowed(false);
+        jScrollPane5.setViewportView(Nucleo1);
+        Nucleo1.getAccessibleContext().setAccessibleName("");
 
-        getContentPane().add(jScrollPane5, new org.netbeans.lib.awtextra.AbsoluteConstraints(740, 500, 480, 50));
+        getContentPane().add(jScrollPane5, new org.netbeans.lib.awtextra.AbsoluteConstraints(750, 520, 480, 60));
 
         txtKeyboard.setBackground(new java.awt.Color(44, 47, 51));
         txtKeyboard.setColumns(20);
@@ -252,7 +266,7 @@ public class mainWindow extends javax.swing.JFrame {
         jLabel5.setForeground(new java.awt.Color(255, 255, 255));
         jLabel5.setText("N1");
         jLabel5.setToolTipText("");
-        getContentPane().add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(700, 510, -1, -1));
+        getContentPane().add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(700, 480, -1, -1));
 
         jLabel3.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
         jLabel3.setForeground(new java.awt.Color(255, 255, 255));
@@ -301,6 +315,26 @@ public class mainWindow extends javax.swing.JFrame {
         }
 
         getContentPane().add(jScrollPane3, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 100, 170, 130));
+
+        lbTiempoN2.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        lbTiempoN2.setForeground(new java.awt.Color(255, 255, 255));
+        lbTiempoN2.setText("Tiempo");
+        getContentPane().add(lbTiempoN2, new org.netbeans.lib.awtextra.AbsoluteConstraints(1000, 610, -1, -1));
+
+        lbCursoN2.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        lbCursoN2.setForeground(new java.awt.Color(255, 255, 255));
+        lbCursoN2.setText("Instrucción en Curso:");
+        getContentPane().add(lbCursoN2, new org.netbeans.lib.awtextra.AbsoluteConstraints(750, 610, -1, -1));
+
+        lbCursoN1.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        lbCursoN1.setForeground(new java.awt.Color(255, 255, 255));
+        lbCursoN1.setText("Instrucción en Curso:");
+        getContentPane().add(lbCursoN1, new org.netbeans.lib.awtextra.AbsoluteConstraints(750, 490, -1, -1));
+
+        lbTiempoN1.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        lbTiempoN1.setForeground(new java.awt.Color(255, 255, 255));
+        lbTiempoN1.setText("Tiempo");
+        getContentPane().add(lbTiempoN1, new org.netbeans.lib.awtextra.AbsoluteConstraints(1000, 490, -1, -1));
 
         lblBackground.setBackground(new java.awt.Color(35, 39, 42));
         lblBackground.setForeground(new java.awt.Color(255, 255, 255));
@@ -364,7 +398,7 @@ public class mainWindow extends javax.swing.JFrame {
             }         
             
         }
-        Data dataManagment = new Data(memory,hardDMemory,values);
+        dataManagment = new Data(memory,hardDMemory,values);
         try {
             dataManagment.dataFromFiles(executedFiles);
         } catch (IOException ex) {
@@ -397,8 +431,50 @@ public class mainWindow extends javax.swing.JFrame {
             queue2Model.addElement((i+1)+". "+queue2Info.get(i));
         }
         workQueue2List.setModel(queue2Model);
+        if(dataManagment.firstQueueData.size()>0){
+            fillN1();
+        }
     }//GEN-LAST:event_btnExecuteActionPerformed
     int fileCounter=0;
+    private void fillN1(){
+        Nucleo1.getTableHeader().setReorderingAllowed(false);
+        DefaultTableModel dtm = new DefaultTableModel(0, 0);
+        
+        String header[] = new String[dataManagment.firstQueueData.size()];
+        for(int i = 0;i<dataManagment.firstQueueData.size();i++){
+            header[i] = "Trabajo N"+i;
+        }
+        dtm.setColumnIdentifiers(header);
+        Nucleo1.setModel(dtm);
+        String works[] = new String[dataManagment.firstQueueData.size()];
+        for(int i = 0;i<dataManagment.firstQueueData.size();i++){
+            works[i] = dataManagment.firstQueueData.get(i);
+        }
+        dtm.addRow(works);
+        if(nucleo1.estado == "En Espera"){
+            startWork();
+        }
+    }
+    
+    private void startWork(){
+        Thread t = new Thread(){
+            public void run(){
+                nucleo1.estado = "En Uso";
+                for(int i = nucleo1.posInst;i<dataManagment.firstQueueData.size();i++){
+                    lbCursoN1.setText("Instrucción en Curso: Trabajo N"+i+"("+dataManagment.firstQueueData.get(i));
+                    long initTime = System.currentTimeMillis();
+                    while(System.currentTimeMillis()-initTime<1000){
+                        double tiempo = (1000-(System.currentTimeMillis()-initTime))/1000;
+                       lbTiempoN1.setText("Tiempo Restante: "+tiempo+" s");
+                    }
+                    nucleo1.posInst = i;
+                }
+                nucleo1.estado = "En Espera";
+                Thread.currentThread().interrupt();
+            }
+        };
+        t.start();
+    }
     
     private void btnLoadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoadActionPerformed
         JFileChooser fileChooser = new JFileChooser();
@@ -455,6 +531,7 @@ public class mainWindow extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JTable Nucleo1;
     private javax.swing.JButton btnExecute;
     private javax.swing.JButton btnLoad;
     private javax.swing.JButton btnNext;
@@ -478,8 +555,11 @@ public class mainWindow extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane6;
     private javax.swing.JScrollPane jScrollPane7;
     private javax.swing.JScrollPane jScrollPane9;
-    private javax.swing.JTable jTable2;
     private javax.swing.JTable jTable3;
+    private javax.swing.JLabel lbCursoN1;
+    private javax.swing.JLabel lbCursoN2;
+    private javax.swing.JLabel lbTiempoN1;
+    private javax.swing.JLabel lbTiempoN2;
     private javax.swing.JLabel lblBackground;
     private javax.swing.JList<String> listHARDMemory;
     private javax.swing.JList<String> listMemory;
