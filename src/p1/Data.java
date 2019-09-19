@@ -95,6 +95,7 @@ public class Data {
         System.out.println(allData.size()+" = Lista de archivos");
         System.out.println(firstQueue.size()+" = first size");
         System.out.println(secondQueue.size()+" = second size");
+        executedFiles.clear();
         createWorkQueues();
     }
     

@@ -40,7 +40,10 @@ public class mainWindow extends javax.swing.JFrame {
     Data dataManagment;
     Nucleo nucleo1;
     Nucleo nucleo2;
-            
+    DefaultListModel<String> modelMemory = new DefaultListModel<>();
+    DefaultListModel<String> modelHARDMemory = new DefaultListModel<>();
+    DefaultListModel<String> queue2Model = new DefaultListModel<>();
+    DefaultListModel<String> queue1Model = new DefaultListModel<>();
     /**
      * Creates new form mainWindow
      */
@@ -55,6 +58,7 @@ public class mainWindow extends javax.swing.JFrame {
         values = list;
         nucleo1 = new Nucleo("En Espera",0);
         nucleo2 = new Nucleo("En Espera",0);
+        
     }
 
     /**
@@ -373,6 +377,7 @@ public class mainWindow extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, "Por favor seleccione un archivo");
         }else{
             for(int i=0;i<(selectedRow.length);i++){
+                
                 JLabel label = new JLabel();
                 label.setText("PCB Archivo"+i);
                 label.setFont(new Font("Segoe UI",Font.BOLD, 15));
@@ -407,28 +412,27 @@ public class mainWindow extends javax.swing.JFrame {
         ArrayList<String> memoryInfo = dataManagment.memoryData;
         //System.out.println(Arrays.toString(memoryInfo));
         ArrayList<String> dataInfo = dataManagment.hardDData;
-        DefaultListModel<String> modelMemory = new DefaultListModel<>();
-        DefaultListModel<String> modelHARDMemory = new DefaultListModel<>();
+        
         for(int i=0;i<memoryInfo.size();i++){
-            modelMemory.addElement((i+1)+". "+memoryInfo.get(i));
+            modelMemory.addElement((modelMemory.getSize()+1)+". "+memoryInfo.get(i));
         }
         listMemory.setModel(modelMemory);
         if(dataInfo.size()>0){
         for(int i=0;i<dataInfo.size();i++){
-            modelHARDMemory.addElement((i+1)+". "+dataInfo.get(i));
+            modelHARDMemory.addElement((modelHARDMemory.getSize()+1)+". "+dataInfo.get(i));
         }
         listHARDMemory.setModel(modelHARDMemory);
         }
         ArrayList<String> queue1Info = dataManagment.firstQueueData;
-        DefaultListModel<String> queue1Model = new DefaultListModel<>();
+        
         for(int i=0;i<queue1Info.size();i++){
-            queue1Model.addElement((i+1)+". "+queue1Info.get(i));
+            queue1Model.addElement((queue1Model.getSize()+1)+". "+queue1Info.get(i));
         }
         workQueue1List.setModel(queue1Model);
         ArrayList<String> queue2Info = dataManagment.secondQueueData;
-        DefaultListModel<String> queue2Model = new DefaultListModel<>();
+        
         for(int i=0;i<queue2Info.size();i++){
-            queue2Model.addElement((i+1)+". "+queue2Info.get(i));
+            queue2Model.addElement((queue2Model.getSize()+1)+". "+queue2Info.get(i));
         }
         workQueue2List.setModel(queue2Model);
         if(dataManagment.firstQueueData.size()>0){
