@@ -58,7 +58,7 @@ public class mainWindow extends javax.swing.JFrame {
         values = list;
         nucleo1 = new Nucleo("En Espera",0);
         nucleo2 = new Nucleo("En Espera",0);
-        
+        dataManagment = new Data(memory,hardDMemory,values);
     }
 
     /**
@@ -403,7 +403,13 @@ public class mainWindow extends javax.swing.JFrame {
             }         
             
         }
-        dataManagment = new Data(memory,hardDMemory,values);
+        
+        
+        modelMemory = new DefaultListModel<>();
+        modelHARDMemory = new DefaultListModel<>();
+        queue1Model = new DefaultListModel<>();
+        queue2Model = new DefaultListModel<>();
+        
         try {
             dataManagment.dataFromFiles(executedFiles);
         } catch (IOException ex) {
@@ -414,25 +420,30 @@ public class mainWindow extends javax.swing.JFrame {
         ArrayList<String> dataInfo = dataManagment.hardDData;
         
         for(int i=0;i<memoryInfo.size();i++){
-            modelMemory.addElement((modelMemory.getSize()+1)+". "+memoryInfo.get(i));
+            modelMemory.addElement((modelMemory.getSize()+1)+"."+memoryInfo.get(i));
         }
+        
         listMemory.setModel(modelMemory);
         if(dataInfo.size()>0){
         for(int i=0;i<dataInfo.size();i++){
-            modelHARDMemory.addElement((modelHARDMemory.getSize()+1)+". "+dataInfo.get(i));
+            modelHARDMemory.addElement((modelHARDMemory.getSize()+1)+"."+dataInfo.get(i));
         }
         listHARDMemory.setModel(modelHARDMemory);
         }
+        
+        
+        
         ArrayList<String> queue1Info = dataManagment.firstQueueData;
         
+        
         for(int i=0;i<queue1Info.size();i++){
-            queue1Model.addElement((queue1Model.getSize()+1)+". "+queue1Info.get(i));
+            queue1Model.addElement((queue1Model.getSize()+1)+"."+queue1Info.get(i));
         }
         workQueue1List.setModel(queue1Model);
         ArrayList<String> queue2Info = dataManagment.secondQueueData;
         
         for(int i=0;i<queue2Info.size();i++){
-            queue2Model.addElement((queue2Model.getSize()+1)+". "+queue2Info.get(i));
+            queue2Model.addElement((queue2Model.getSize()+1)+"."+queue2Info.get(i));
         }
         workQueue2List.setModel(queue2Model);
         if(dataManagment.firstQueueData.size()>0){

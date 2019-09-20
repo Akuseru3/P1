@@ -32,26 +32,32 @@ public class Data {
     ArrayList<List<String>> secondQueue = new ArrayList<List<String>>();
     ArrayList<String> firstQueueData = new ArrayList<String>();
     ArrayList<String> secondQueueData = new ArrayList<String>();
-
+    int sizeOfMemory = memory;int sizeOfHardMemory = hardDMemory;
     public Data(){
     }
     public Data(int valueMemory,int valueMemory2,ArrayList<Integer> list){
         memory=valueMemory;
         hardDMemory = valueMemory2;
         valuesWeights = list;
+        sizeOfMemory = memory;sizeOfHardMemory = hardDMemory;
     }
+    
     
     public void dataFromFiles(List<String[]> data) throws IOException{
         executedFiles = data;
-        int sizeOfMemory = memory;int sizeOfHardMemory = hardDMemory;
+        
         for(int i=0;i<data.size();i++){
+            int flag=0;
+            System.out.println("Memoria: " +sizeOfMemory);
+            System.out.println("Memoria Virtual: " +sizeOfHardMemory);
             ArrayList<String> newFile = new ArrayList<String>();
             String[] actual= data.get(i);
             Path path = Paths.get(actual[2]);
             List<String> content = Files.readAllLines(path, StandardCharsets.UTF_8);
             sizeOfMemory = sizeOfMemory-content.size();
-            if(sizeOfMemory<=0){
+            if(sizeOfMemory<=0){                
                 sizeOfHardMemory= sizeOfHardMemory-content.size();
+                flag =1;
             }
             for(int j=0;j<content.size();j++){
                 newFile.add(content.get(j));
@@ -61,7 +67,7 @@ public class Data {
                 if((sizeOfMemory)>=(0)){
                     memoryData.add(content.get(j));                    
                 }else if((sizeOfHardMemory)>=(0)){
-                    hardDData.add(content.get(j));
+                    hardDData.add(content.get(j));                    
                 }else{
                     System.out.println("no more");
                     break;                    
@@ -69,7 +75,9 @@ public class Data {
                 
             }
             allData.add(newFile);
-            
+            if(flag==1 && sizeOfMemory>0){
+                sizeOfMemory = sizeOfMemory+content.size();
+            }
         }
         System.out.println(executedFiles.size()+ " Los archivos ejecutados");
         for(int y=0;y<executedFiles.size();y++){
@@ -96,6 +104,8 @@ public class Data {
         System.out.println(firstQueue.size()+" = first size");
         System.out.println(secondQueue.size()+" = second size");
         executedFiles.clear();
+        firstQueueData.clear();
+        secondQueueData.clear();
         createWorkQueues();
     }
     
@@ -110,6 +120,7 @@ public class Data {
         return largestValue;
     }
     public void createWorkQueues(){
+        
         int value1 = getLargest(firstQueue);
         int value2 = getLargest(secondQueue);
         //System.out.println(value1 + " queue1 lista tiene");
@@ -143,7 +154,8 @@ public class Data {
                 }
             }
         }
-        
+        System.out.println("Tamaño Cola1:" + firstQueueData.size());
+        System.out.println("tamaño Cola2:" + secondQueueData.size());
     }
     
 }
