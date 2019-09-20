@@ -78,7 +78,7 @@ public class mainWindow extends javax.swing.JFrame {
         jScrollPane10 = new javax.swing.JScrollPane();
         listMemory = new javax.swing.JList<>();
         jScrollPane7 = new javax.swing.JScrollPane();
-        jTable3 = new javax.swing.JTable();
+        Nucleo2 = new javax.swing.JTable();
         jScrollPane5 = new javax.swing.JScrollPane();
         Nucleo1 = new javax.swing.JTable();
         jScrollPane4 = new javax.swing.JScrollPane();
@@ -142,15 +142,16 @@ public class mainWindow extends javax.swing.JFrame {
 
         getContentPane().add(jScrollPane10, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 50, 190, 230));
 
-        jTable3.setModel(new javax.swing.table.DefaultTableModel(
+        Nucleo2.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null}
+
             },
             new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
+
             }
         ));
-        jScrollPane7.setViewportView(jTable3);
+        Nucleo2.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
+        jScrollPane7.setViewportView(Nucleo2);
 
         getContentPane().add(jScrollPane7, new org.netbeans.lib.awtextra.AbsoluteConstraints(750, 640, 480, 60));
 
@@ -435,9 +436,8 @@ public class mainWindow extends javax.swing.JFrame {
             queue2Model.addElement((queue2Model.getSize()+1)+". "+queue2Info.get(i));
         }
         workQueue2List.setModel(queue2Model);
-        if(dataManagment.firstQueueData.size()>0){
-            fillN1();
-        }
+        fillN1();
+        fillN2();
     }//GEN-LAST:event_btnExecuteActionPerformed
     int fileCounter=0;
     private void fillN1(){
@@ -456,11 +456,11 @@ public class mainWindow extends javax.swing.JFrame {
         }
         dtm.addRow(works);
         if(nucleo1.estado == "En Espera"){
-            startWork();
+            startN1();
         }
     }
     
-    private void startWork(){
+    private void startN1(){
         Thread t = new Thread(){
             public void run(){
                 nucleo1.estado = "En Uso";
@@ -479,6 +479,48 @@ public class mainWindow extends javax.swing.JFrame {
         };
         t.start();
     }
+    
+    private void fillN2(){
+        Nucleo2.getTableHeader().setReorderingAllowed(false);
+        DefaultTableModel dtm = new DefaultTableModel(0, 0);
+        
+        String header[] = new String[dataManagment.secondQueueData.size()];
+        for(int i = 0;i<dataManagment.secondQueueData.size();i++){
+            header[i] = "Trabajo N"+i;
+        }
+        dtm.setColumnIdentifiers(header);
+        Nucleo2.setModel(dtm);
+        String works[] = new String[dataManagment.secondQueueData.size()];
+        for(int i = 0;i<dataManagment.secondQueueData.size();i++){
+            works[i] = dataManagment.secondQueueData.get(i);
+        }
+        dtm.addRow(works);
+        if(nucleo2.estado == "En Espera"){
+            startN2();
+        }
+    }
+    
+    private void startN2(){
+        Thread t2 = new Thread(){
+            public void run(){
+                nucleo2.estado = "En Uso";
+                for(int i = nucleo2.posInst;i<dataManagment.secondQueueData.size();i++){
+                    lbCursoN2.setText("Instrucción en Curso: Trabajo N"+i+"("+dataManagment.secondQueueData.get(i));
+                    long initTime = System.currentTimeMillis();
+                    while(System.currentTimeMillis()-initTime<1000){
+                        double tiempo = (1000-(System.currentTimeMillis()-initTime))/1000;
+                       lbTiempoN2.setText("Tiempo Restante: "+tiempo+" s");
+                    }
+                    nucleo2.posInst = i;
+                }
+                nucleo2.estado = "En Espera";
+                Thread.currentThread().interrupt();
+            }
+        };
+        t2.start();
+    }
+    
+    
     
     private void btnLoadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoadActionPerformed
         JFileChooser fileChooser = new JFileChooser();
@@ -536,6 +578,7 @@ public class mainWindow extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JTable Nucleo1;
+    private javax.swing.JTable Nucleo2;
     private javax.swing.JButton btnExecute;
     private javax.swing.JButton btnLoad;
     private javax.swing.JButton btnNext;
@@ -559,7 +602,6 @@ public class mainWindow extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane6;
     private javax.swing.JScrollPane jScrollPane7;
     private javax.swing.JScrollPane jScrollPane9;
-    private javax.swing.JTable jTable3;
     private javax.swing.JLabel lbCursoN1;
     private javax.swing.JLabel lbCursoN2;
     private javax.swing.JLabel lbTiempoN1;
