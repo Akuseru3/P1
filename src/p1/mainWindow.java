@@ -323,23 +323,23 @@ public class mainWindow extends javax.swing.JFrame {
 
         lbTiempoN2.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         lbTiempoN2.setForeground(new java.awt.Color(255, 255, 255));
-        lbTiempoN2.setText("Tiempo");
-        getContentPane().add(lbTiempoN2, new org.netbeans.lib.awtextra.AbsoluteConstraints(1000, 610, -1, -1));
+        lbTiempoN2.setText("Tiempo Restante: --");
+        getContentPane().add(lbTiempoN2, new org.netbeans.lib.awtextra.AbsoluteConstraints(1080, 610, -1, -1));
 
         lbCursoN2.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         lbCursoN2.setForeground(new java.awt.Color(255, 255, 255));
-        lbCursoN2.setText("Instrucción en Curso:");
+        lbCursoN2.setText("Instrucción en Curso: Ninguna");
         getContentPane().add(lbCursoN2, new org.netbeans.lib.awtextra.AbsoluteConstraints(750, 610, -1, -1));
 
         lbCursoN1.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         lbCursoN1.setForeground(new java.awt.Color(255, 255, 255));
-        lbCursoN1.setText("Instrucción en Curso:");
+        lbCursoN1.setText("Instrucción en Curso: Ninguna");
         getContentPane().add(lbCursoN1, new org.netbeans.lib.awtextra.AbsoluteConstraints(750, 490, -1, -1));
 
         lbTiempoN1.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         lbTiempoN1.setForeground(new java.awt.Color(255, 255, 255));
-        lbTiempoN1.setText("Tiempo");
-        getContentPane().add(lbTiempoN1, new org.netbeans.lib.awtextra.AbsoluteConstraints(1000, 490, -1, -1));
+        lbTiempoN1.setText("Tiempo Restante: --");
+        getContentPane().add(lbTiempoN1, new org.netbeans.lib.awtextra.AbsoluteConstraints(1080, 490, -1, -1));
 
         lblBackground.setBackground(new java.awt.Color(35, 39, 42));
         lblBackground.setForeground(new java.awt.Color(255, 255, 255));
@@ -457,7 +457,7 @@ public class mainWindow extends javax.swing.JFrame {
         
         String header[] = new String[dataManagment.firstQueueData.size()];
         for(int i = 0;i<dataManagment.firstQueueData.size();i++){
-            header[i] = "Trabajo N"+i;
+            header[i] = "Trabajo "+(i+1);
         }
         dtm.setColumnIdentifiers(header);
         Nucleo1.setModel(dtm);
@@ -475,15 +475,19 @@ public class mainWindow extends javax.swing.JFrame {
         Thread t = new Thread(){
             public void run(){
                 nucleo1.estado = "En Uso";
+                InstructionConsultor guide = new InstructionConsultor(dataManagment.valuesWeights);
                 for(int i = nucleo1.posInst;i<dataManagment.firstQueueData.size();i++){
-                    lbCursoN1.setText("Instrucción en Curso: Trabajo N"+i+"("+dataManagment.firstQueueData.get(i));
+                    lbCursoN1.setText("Instrucción en Curso: "+(i+1)+". "+dataManagment.firstQueueData.get(i));
+                    int timeWeight = guide.checkWeight(dataManagment.firstQueueData.get(i)) * 1000;
                     long initTime = System.currentTimeMillis();
-                    while(System.currentTimeMillis()-initTime<1000){
-                        double tiempo = (1000-(System.currentTimeMillis()-initTime))/1000;
+                    while(System.currentTimeMillis()-initTime<timeWeight){
+                        double tiempo = (timeWeight-(System.currentTimeMillis()-initTime))/1000 + 1;
                        lbTiempoN1.setText("Tiempo Restante: "+tiempo+" s");
                     }
                     nucleo1.posInst = i;
                 }
+                lbCursoN1.setText("Instrucción en Curso: Ninguna");
+                lbTiempoN1.setText("Tiempo Restante: --");
                 nucleo1.estado = "En Espera";
                 Thread.currentThread().interrupt();
             }
@@ -497,7 +501,7 @@ public class mainWindow extends javax.swing.JFrame {
         
         String header[] = new String[dataManagment.secondQueueData.size()];
         for(int i = 0;i<dataManagment.secondQueueData.size();i++){
-            header[i] = "Trabajo N"+i;
+            header[i] = "Trabajo "+(i+1);
         }
         dtm.setColumnIdentifiers(header);
         Nucleo2.setModel(dtm);
@@ -515,15 +519,19 @@ public class mainWindow extends javax.swing.JFrame {
         Thread t2 = new Thread(){
             public void run(){
                 nucleo2.estado = "En Uso";
+                InstructionConsultor guide = new InstructionConsultor(dataManagment.valuesWeights);
                 for(int i = nucleo2.posInst;i<dataManagment.secondQueueData.size();i++){
-                    lbCursoN2.setText("Instrucción en Curso: Trabajo N"+i+"("+dataManagment.secondQueueData.get(i));
+                    lbCursoN2.setText("Instrucción en Curso: "+(i+1)+". "+dataManagment.secondQueueData.get(i));
+                    int timeWeight = guide.checkWeight(dataManagment.secondQueueData.get(i)) * 1000;
                     long initTime = System.currentTimeMillis();
-                    while(System.currentTimeMillis()-initTime<1000){
-                        double tiempo = (1000-(System.currentTimeMillis()-initTime))/1000;
+                    while(System.currentTimeMillis()-initTime<timeWeight){
+                        double tiempo = (timeWeight-(System.currentTimeMillis()-initTime))/1000 + 1;
                        lbTiempoN2.setText("Tiempo Restante: "+tiempo+" s");
                     }
                     nucleo2.posInst = i;
                 }
+                lbCursoN2.setText("Instrucción en Curso: Ninguna");
+                lbTiempoN2.setText("Tiempo Restante: --");
                 nucleo2.estado = "En Espera";
                 Thread.currentThread().interrupt();
             }

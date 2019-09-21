@@ -40,6 +40,9 @@ public class Data {
         hardDMemory = valueMemory2;
         valuesWeights = list;
         sizeOfMemory = memory;sizeOfHardMemory = hardDMemory;
+        for(int i = 0; i<list.size();i++){
+            System.out.println(list.get(i));
+        }
     }
     
     
