@@ -30,6 +30,12 @@ public class Data {
     ArrayList<Integer> valuesWeights = new ArrayList<Integer>();
     ArrayList<List<String>> firstQueue = new ArrayList<List<String>>();
     ArrayList<List<String>> secondQueue = new ArrayList<List<String>>();
+    
+    ArrayList<ArrayList<Instruction>> firstQueueObjectsList = new ArrayList<ArrayList<Instruction>>();
+    ArrayList<ArrayList<Instruction>> secondQueueObjectsList = new ArrayList<ArrayList<Instruction>>();
+    ArrayList<Instruction> firstQueueObjects = new ArrayList<Instruction>();
+    ArrayList<Instruction> secondQueueObjects = new ArrayList<Instruction>();
+    
     ArrayList<String> firstQueueData = new ArrayList<String>();
     ArrayList<String> secondQueueData = new ArrayList<String>();
     int sizeOfMemory = memory;int sizeOfHardMemory = hardDMemory;
@@ -84,6 +90,7 @@ public class Data {
         }
         System.out.println(executedFiles.size()+ " Los archivos ejecutados");
         for(int y=0;y<executedFiles.size();y++){
+            System.out.println("Archivo "+y+"===> "+Arrays.toString(executedFiles.get(y)));
             ArrayList<String> newFile = new ArrayList<String>();
             String[] actual= executedFiles.get(y);
             Path path = Paths.get(actual[2]);
@@ -93,22 +100,37 @@ public class Data {
             Random r = new Random();
             int value = r.nextInt(2)+1;
             System.out.println("Random: "+value);
-            if(value==1){
+            if(value==1){                
+                //executedFiles.get(y)[0];                
                 firstQueue.add(content);
+                ArrayList<Instruction> fileContent = new ArrayList<Instruction>();
+                for(int k=0;k<content.size();k++){
+                    Instruction object = new Instruction(content.get(k),Integer.parseInt(executedFiles.get(y)[0]));
+                    fileContent.add(object);
+                }
+                firstQueueObjectsList.add(fileContent);
             }
             else if(value==2){
                 secondQueue.add(content);
+                ArrayList<Instruction> fileContent = new ArrayList<Instruction>();
+                for(int k=0;k<content.size();k++){
+                    Instruction object = new Instruction(content.get(k),Integer.parseInt(executedFiles.get(y)[0]));
+                    fileContent.add(object);
+                }
+                secondQueueObjectsList.add(fileContent);
             }
             else{
                 System.out.println("Wrong random");
             }
         }
         System.out.println(allData.size()+" = Lista de archivos");
-        System.out.println(firstQueue.size()+" = first size");
+        System.out.println(Arrays.toString(firstQueue.toArray())+" = first size");
         System.out.println(secondQueue.size()+" = second size");
         executedFiles.clear();
         firstQueueData.clear();
         secondQueueData.clear();
+        firstQueueObjects.clear();
+        secondQueueObjects.clear();
         createWorkQueues();
     }
     
@@ -138,6 +160,9 @@ public class Data {
                     String instruction = fileData.get(i);
                     //System.out.println(instruction);
                     firstQueueData.add(instruction);
+                    ArrayList<Instruction> fileObjects = firstQueueObjectsList.get(y);
+                    Instruction object = fileObjects.get(i);
+                    firstQueueObjects.add(object);
                 }catch(Exception e){
                     //System.out.println("No entró");
                 }
@@ -152,13 +177,21 @@ public class Data {
                     String instruction = fileData.get(i);
                     //System.out.println(instruction);
                     secondQueueData.add(instruction);
+                    ArrayList<Instruction> fileObjects = secondQueueObjectsList.get(y);
+                    Instruction object = fileObjects.get(i);
+                    secondQueueObjects.add(object);
                 }catch(Exception e){
                     //System.out.println("No entró");
                 }
             }
         }
-        System.out.println("Tamaño Cola1:" + firstQueueData.size());
-        System.out.println("tamaño Cola2:" + secondQueueData.size());
+        System.out.println("Tamaño Cola1:" + firstQueueObjects.size());
+        for(int l=0;l<firstQueueObjects.size();l++){
+            Instruction object = firstQueueObjects.get(l);
+            System.out.println("FILE ==> "+object.fileNumber);
+            System.out.println("Intrs ==> "+object.command);
+        }
+        System.out.println("tamaño Cola2:" + secondQueueObjects.size());
     }
     
 }

@@ -11,9 +11,9 @@ package p1;
  */
 public class Instruction {
     public String command;
-    public int archivo;
+    public int fileNumber;
     Instruction(String command, int archivo){
         this.command = command;
-        this.archivo = archivo;
+        this.fileNumber = archivo;
     }
 }

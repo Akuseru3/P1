@@ -383,8 +383,9 @@ public class mainWindow extends javax.swing.JFrame {
                 label.setText("PCB Archivo"+i);
                 label.setFont(new Font("Segoe UI",Font.BOLD, 15));
                 label.setForeground(Color.WHITE);
-                System.out.println(selectedRow[i]);
+                System.out.println(selectedRow[i]);                
                 executedFiles.add(selectedFiles.get(selectedRow[i]));
+                //System.out.println("AHHHHHHH"+Arrays.toString(executedFiles.get(selectedRow[i])));
                 Object rowData[][] = {};
                 Object columnNames[] = { "Column One", "Column Two", "Column Three" };
                 JTable table = new JTable(rowData, columnNames);
@@ -405,7 +406,7 @@ public class mainWindow extends javax.swing.JFrame {
             
         }
         
-        
+        //System.out.println("SELECCIONADOS: "+selectedFiles.size());
         modelMemory = new DefaultListModel<>();
         modelHARDMemory = new DefaultListModel<>();
         queue1Model = new DefaultListModel<>();
