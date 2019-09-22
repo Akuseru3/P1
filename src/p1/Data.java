@@ -46,9 +46,7 @@ public class Data {
         hardDMemory = valueMemory2;
         valuesWeights = list;
         sizeOfMemory = memory;sizeOfHardMemory = hardDMemory;
-        for(int i = 0; i<list.size();i++){
-            System.out.println(list.get(i));
-        }
+        
     }
     
     
@@ -125,7 +123,7 @@ public class Data {
             }
         }
         System.out.println(allData.size()+" = Lista de archivos");
-        System.out.println(Arrays.toString(firstQueue.toArray())+" = first size");
+        //System.out.println(Arrays.toString(firstQueue.toArray())+" = first size");
         System.out.println(secondQueue.size()+" = second size");
         executedFiles.clear();
         /*firstQueueData.clear();
@@ -147,6 +145,15 @@ public class Data {
         return largestValue;
     }
     public void createWorkQueues(){
+        /*for(int l=0;l<firstQueueObjectsList.size();l++){
+            ArrayList<Instruction> fileObject = firstQueueObjectsList.get(l);
+            for(int k=0;l<fileObject.size()-1;k++){
+                Instruction object = fileObject.get(k);
+                System.out.println(object.command+"--"+object.fileNumber);
+            }
+        }*/
+        
+        
         
         int value1 = getLargest(firstQueue);
         int value2 = getLargest(secondQueue);
@@ -157,6 +164,8 @@ public class Data {
             //System.out.println("Pos: "+i);
             for(int y=0;y<firstQueue.size();y++){
                 //System.out.println("List: "+y);
+                //System.out.println(Arrays.toString(firstQueue.toArray()));
+                
                 try{
                     List<String> fileData = firstQueue.get(y);
                     String instruction = fileData.get(i);
@@ -164,16 +173,20 @@ public class Data {
                     firstQueueData.add(instruction);
                     ArrayList<Instruction> fileObjects = firstQueueObjectsList.get(y);
                     Instruction object = fileObjects.get(i);
+                    //System.out.println("INST1: "+object.command);
                     firstQueueObjects.add(object);
                 }catch(Exception e){
                     //System.out.println("No entró");
+                    //System.out.println(e);
                 }
             }
         }
         for(int i=0;i<value2;i++){
             //System.out.println("Pos: "+i);
+            
             for(int y=0;y<secondQueue.size();y++){
                 //System.out.println("List: "+y);
+                //System.out.println(Arrays.toString(secondQueue.toArray()));
                 try{
                     List<String> fileData = secondQueue.get(y);
                     String instruction = fileData.get(i);
@@ -181,6 +194,7 @@ public class Data {
                     secondQueueData.add(instruction);
                     ArrayList<Instruction> fileObjects = secondQueueObjectsList.get(y);
                     Instruction object = fileObjects.get(i);
+                    //System.out.println("INST2: "+object.command);
                     secondQueueObjects.add(object);
                 }catch(Exception e){
                     //System.out.println("No entró");
@@ -199,8 +213,11 @@ public class Data {
             System.out.println("Intrs ==> "+object.command);
         }*/
         
+        
         firstQueue.clear();
         secondQueue.clear();
+        firstQueueObjectsList.clear();
+        secondQueueObjectsList.clear();
     }
     
 }
