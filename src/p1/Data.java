@@ -102,6 +102,7 @@ public class Data {
             if(value==1){                
                 //executedFiles.get(y)[0];                
                 firstQueue.add(content);
+                //tempFirstQueue.add(content);
                 ArrayList<Instruction> fileContent = new ArrayList<Instruction>();
                 for(int k=0;k<content.size();k++){
                     Instruction object = new Instruction(content.get(k),Integer.parseInt(executedFiles.get(y)[0]));
@@ -111,6 +112,7 @@ public class Data {
             }
             else if(value==2){
                 secondQueue.add(content);
+                //tempSecondQueue.add(content);
                 ArrayList<Instruction> fileContent = new ArrayList<Instruction>();
                 for(int k=0;k<content.size();k++){
                     Instruction object = new Instruction(content.get(k),Integer.parseInt(executedFiles.get(y)[0]));
@@ -126,10 +128,11 @@ public class Data {
         System.out.println(Arrays.toString(firstQueue.toArray())+" = first size");
         System.out.println(secondQueue.size()+" = second size");
         executedFiles.clear();
-        firstQueueData.clear();
+        /*firstQueueData.clear();
         secondQueueData.clear();
         firstQueueObjects.clear();
-        secondQueueObjects.clear();
+        secondQueueObjects.clear();*/
+        
         createWorkQueues();
     }
     
@@ -185,12 +188,19 @@ public class Data {
             }
         }
         System.out.println("Tamaño Cola1:" + firstQueueObjects.size());
-        for(int l=0;l<firstQueueObjects.size();l++){
+        System.out.println("tamaño Cola2:" + secondQueueObjects.size());
+        System.out.println("----------------------------------------");
+        System.out.println("Tamaño Cola1:" + firstQueueData.size());
+        System.out.println("tamaño Cola2:" + secondQueueData.size());
+        
+        /*for(int l=0;l<firstQueueObjects.size();l++){
             Instruction object = firstQueueObjects.get(l);
             System.out.println("FILE ==> "+object.fileNumber);
             System.out.println("Intrs ==> "+object.command);
-        }
-        System.out.println("tamaño Cola2:" + secondQueueObjects.size());
+        }*/
+        
+        firstQueue.clear();
+        secondQueue.clear();
     }
     
 }
