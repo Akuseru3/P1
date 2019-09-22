@@ -54,7 +54,6 @@ public class Data {
     
     public void dataFromFiles(List<String[]> data) throws IOException{
         executedFiles = data;
-        
         for(int i=0;i<data.size();i++){
             int flag=0;
             System.out.println("Memoria: " +sizeOfMemory);

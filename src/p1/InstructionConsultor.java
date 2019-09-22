@@ -51,4 +51,21 @@ public class InstructionConsultor {
                 return 0;
         }
     }
+    
+    public boolean isInterrupt(ArrayList<Instruction> cola, int actualInst){
+        String instruction = cola.get(actualInst).command;
+        String[] parts = instruction.split(" ");
+        String command = parts[0];
+        if("INT".equals(command)){
+            return true;
+        }
+        else{
+            return false;
+        }
+    }
+    
+    public boolean checkMoreInstructions(ArrayList<Instruction> cola, int actualInst){
+        int archivoOrigen = cola.get(actualInst).fileNumber;
+        return false;
+    }
 }

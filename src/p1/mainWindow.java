@@ -8,6 +8,7 @@ package p1;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -175,6 +176,11 @@ public class mainWindow extends javax.swing.JFrame {
         txtKeyboard.setForeground(new java.awt.Color(255, 255, 255));
         txtKeyboard.setRows(5);
         txtKeyboard.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 170, 181), 3));
+        txtKeyboard.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                txtKeyboardKeyPressed(evt);
+            }
+        });
         jScrollPane4.setViewportView(txtKeyboard);
 
         getContentPane().add(jScrollPane4, new org.netbeans.lib.awtextra.AbsoluteConstraints(730, 320, 480, 100));
@@ -478,18 +484,31 @@ public class mainWindow extends javax.swing.JFrame {
                 nucleo1.estado = "En Uso";
                 InstructionConsultor guide = new InstructionConsultor(dataManagment.valuesWeights);
                 for(int i = nucleo1.posInst;i<dataManagment.firstQueueData.size();i++){
+                    nucleo1.posInst = i;
                     lbCursoN1.setText("Instrucción en Curso: "+(i+1)+". "+dataManagment.firstQueueData.get(i));
                     int timeWeight = guide.checkWeight(dataManagment.firstQueueData.get(i)) * 1000;
                     long initTime = System.currentTimeMillis();
                     while(System.currentTimeMillis()-initTime<timeWeight){
-                        double tiempo = (timeWeight-(System.currentTimeMillis()-initTime))/1000 + 1;
+                       double tiempo = (timeWeight-(System.currentTimeMillis()-initTime))/1000 + 1;
                        lbTiempoN1.setText("Tiempo Restante: "+tiempo+" s");
                     }
-                    nucleo1.posInst = i;
+                    if(guide.isInterrupt(dataManagment.firstQueueObjects, i) && nucleo2.estado != "En Interrupcion"){
+                        System.out.println("hey");
+                        lbTiempoN1.setText("Tiempo Restante: --");
+                        nucleo1.estado = "En Interrupcion";
+                        break;
+                    }
+                    if(guide.isInterrupt(dataManagment.firstQueueObjects, i) && nucleo2.estado == "En Interrupcion"){
+                        lbTiempoN1.setText("Tiempo Restante: --");
+                        nucleo1.estado = "Esperando Interrupcion";
+                        break;
+                    }
                 }
-                lbCursoN1.setText("Instrucción en Curso: Ninguna");
-                lbTiempoN1.setText("Tiempo Restante: --");
-                nucleo1.estado = "En Espera";
+                if(nucleo1.estado == "En Uso"){
+                    lbCursoN1.setText("Instrucción en Curso: Ninguna");
+                    lbTiempoN1.setText("Tiempo Restante: --");
+                    nucleo1.estado = "En Espera";
+                }
                 Thread.currentThread().interrupt();
             }
         };
@@ -522,18 +541,30 @@ public class mainWindow extends javax.swing.JFrame {
                 nucleo2.estado = "En Uso";
                 InstructionConsultor guide = new InstructionConsultor(dataManagment.valuesWeights);
                 for(int i = nucleo2.posInst;i<dataManagment.secondQueueData.size();i++){
+                    nucleo2.posInst = i;
                     lbCursoN2.setText("Instrucción en Curso: "+(i+1)+". "+dataManagment.secondQueueData.get(i));
                     int timeWeight = guide.checkWeight(dataManagment.secondQueueData.get(i)) * 1000;
                     long initTime = System.currentTimeMillis();
                     while(System.currentTimeMillis()-initTime<timeWeight){
-                        double tiempo = (timeWeight-(System.currentTimeMillis()-initTime))/1000 + 1;
+                       double tiempo = (timeWeight-(System.currentTimeMillis()-initTime))/1000 + 1;
                        lbTiempoN2.setText("Tiempo Restante: "+tiempo+" s");
                     }
-                    nucleo2.posInst = i;
+                    if(guide.isInterrupt(dataManagment.secondQueueObjects, i) && nucleo1.estado != "En Interrupcion"){
+                        lbTiempoN2.setText("Tiempo Restante: --");
+                        nucleo2.estado = "En Interrupcion";
+                        break;
+                    }
+                    if(guide.isInterrupt(dataManagment.secondQueueObjects, i) && nucleo1.estado == "En Interrupcion"){
+                        lbTiempoN2.setText("Tiempo Restante: --");
+                        nucleo2.estado = "Esperando Interrupcion";
+                        break;
+                    }
                 }
-                lbCursoN2.setText("Instrucción en Curso: Ninguna");
-                lbTiempoN2.setText("Tiempo Restante: --");
-                nucleo2.estado = "En Espera";
+                if(nucleo2.estado == "En Uso"){
+                    lbCursoN2.setText("Instrucción en Curso: Ninguna");
+                    lbTiempoN2.setText("Tiempo Restante: --");
+                    nucleo2.estado = "En Espera";
+                }
                 Thread.currentThread().interrupt();
             }
         };
@@ -560,6 +591,28 @@ public class mainWindow extends javax.swing.JFrame {
             filesTable.setModel(model);
         }        
     }//GEN-LAST:event_btnLoadActionPerformed
+
+    private void txtKeyboardKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtKeyboardKeyPressed
+        // TODO add your handling code here:
+        if(evt.getKeyCode() == KeyEvent.VK_ENTER){
+            if(nucleo1.estado.equals("En Interrupcion")){
+                nucleo1.posInst += 1;
+                nucleo1.estado = "En Uso";
+                startN1();
+                if(nucleo2.estado.equals("Esperando Interrupcion")){
+                    nucleo2.estado = "En Interrupcion";
+                }
+            }
+            if(nucleo2.estado.equals("En Interrupcion")){
+                nucleo2.posInst += 1;
+                nucleo2.estado = "En Uso";
+                startN2();
+                if(nucleo1.estado.equals("Esperando Interrupcion")){
+                    nucleo1.estado = "En Interrupcion";
+                }
+            }
+        }
+    }//GEN-LAST:event_txtKeyboardKeyPressed
 
     /**
      * @param args the command line arguments
