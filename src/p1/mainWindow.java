@@ -357,7 +357,6 @@ public class mainWindow extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
     
     private void btnNextActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNextActionPerformed
-        System.out.println("ashdhs");
         Object rowData[][] = { { "Row1-Column1", "Row1-Column2", "Row1-Column3" },
         { "Row2-Column1", "Row2-Column2", "Row2-Column3" },{ "Row1-Column1", "Row1-Column2", "Row1-Column3" },{ "Row1-Column1", "Row1-Column2", "Row1-Column3" },{ "Row1-Column1", "Row1-Column2", "Row1-Column3" },{ "Row1-Column1", "Row1-Column2", "Row1-Column3" }
         ,{ "Row1-Column1", "Row1-Column2", "Row1-Column3" },{ "Row1-Column1", "Row1-Column2", "Row1-Column3" },{ "Row1-Column1", "Row1-Column2", "Row1-Column3" },{ "Row1-Column1", "Row1-Column2", "Row1-Column3" },{ "Row1-Column1", "Row1-Column2", "Row1-Column3" },};
@@ -493,9 +492,9 @@ public class mainWindow extends javax.swing.JFrame {
                        lbTiempoN1.setText("Tiempo Restante: "+tiempo+" s");
                     }
                     if(guide.isInterrupt(dataManagment.firstQueueObjects, i) && nucleo2.estado != "En Interrupcion"){
-                        System.out.println("hey");
                         lbTiempoN1.setText("Tiempo Restante: --");
                         nucleo1.estado = "En Interrupcion";
+                        txtScreen.setText(txtScreen.getText()+guide.interruptionInfo(dataManagment.firstQueueData.get(i)));
                         break;
                     }
                     if(guide.isInterrupt(dataManagment.firstQueueObjects, i) && nucleo2.estado == "En Interrupcion"){
@@ -552,6 +551,7 @@ public class mainWindow extends javax.swing.JFrame {
                     if(guide.isInterrupt(dataManagment.secondQueueObjects, i) && nucleo1.estado != "En Interrupcion"){
                         lbTiempoN2.setText("Tiempo Restante: --");
                         nucleo2.estado = "En Interrupcion";
+                        txtScreen.setText(txtScreen.getText()+guide.interruptionInfo(dataManagment.secondQueueData.get(i)));
                         break;
                     }
                     if(guide.isInterrupt(dataManagment.secondQueueObjects, i) && nucleo1.estado == "En Interrupcion"){
@@ -595,12 +595,14 @@ public class mainWindow extends javax.swing.JFrame {
     private void txtKeyboardKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtKeyboardKeyPressed
         // TODO add your handling code here:
         if(evt.getKeyCode() == KeyEvent.VK_ENTER){
+            InstructionConsultor guide = new InstructionConsultor(dataManagment.valuesWeights);
             if(nucleo1.estado.equals("En Interrupcion")){
                 nucleo1.posInst += 1;
                 nucleo1.estado = "En Uso";
                 startN1();
                 if(nucleo2.estado.equals("Esperando Interrupcion")){
                     nucleo2.estado = "En Interrupcion";
+                    txtScreen.setText(txtScreen.getText()+guide.interruptionInfo(dataManagment.secondQueueData.get(nucleo2.posInst)));
                 }
             }
             if(nucleo2.estado.equals("En Interrupcion")){
@@ -609,6 +611,7 @@ public class mainWindow extends javax.swing.JFrame {
                 startN2();
                 if(nucleo1.estado.equals("Esperando Interrupcion")){
                     nucleo1.estado = "En Interrupcion";
+                    txtScreen.setText(txtScreen.getText()+guide.interruptionInfo(dataManagment.firstQueueData.get(nucleo1.posInst)));
                 }
             }
         }

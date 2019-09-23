@@ -64,6 +64,21 @@ public class InstructionConsultor {
         }
     }
     
+    public String interruptionInfo(String instruction){
+        String[] parts = instruction.split(" ");
+        String command = parts[1];
+        switch(command){
+            case "20H":
+                return "Finalizando el programa...\nPresione ENTER en el teclado para finalizar el programa en ejecución.\n";
+            case "16H":
+                return "ESTE DATO FUE IMPRESO POR UNA LLAMADA.\nPresione ENTER en el teclado para continuar.\n";
+            case "05H":
+                return "Escriba en el teclado la informacion que desea guardar.\nPresione ENTER en el teclado al terminar para continuar.\n";
+            default:
+                return "";
+        }
+    }
+    
     public boolean checkMoreInstructions(ArrayList<Instruction> cola, int actualInst){
         int archivoOrigen = cola.get(actualInst).fileNumber;
         return false;
