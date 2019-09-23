@@ -24,6 +24,9 @@ public class Data {
     int memory;int hardDMemory;int fileCounter =0;
     ArrayList<String> memoryData = new ArrayList<String>();
     ArrayList<String> hardDData = new ArrayList<String>();
+    ArrayList<Integer> memoryFiles = new ArrayList<Integer>();
+    ArrayList<Integer> hardDFiles = new ArrayList<Integer>();
+    
     ArrayList<ArrayList<String>> allData = new ArrayList<ArrayList<String>>();
     int memoryCounter =0;int hardDCounter=0;
     List<String[]> executedFiles = new ArrayList<String[]>();
@@ -51,44 +54,15 @@ public class Data {
     
     
     public void dataFromFiles(List<String[]> data) throws IOException{
-        executedFiles = data;
-        for(int i=0;i<data.size();i++){
-            int flag=0;
-            System.out.println("Memoria: " +sizeOfMemory);
-            System.out.println("Memoria Virtual: " +sizeOfHardMemory);
-            ArrayList<String> newFile = new ArrayList<String>();
-            String[] actual= data.get(i);
-            Path path = Paths.get(actual[2]);
-            List<String> content = Files.readAllLines(path, StandardCharsets.UTF_8);
-            sizeOfMemory = sizeOfMemory-content.size();
-            if(sizeOfMemory<=0){                
-                sizeOfHardMemory= sizeOfHardMemory-content.size();
-                flag =1;
-            }
-            for(int j=0;j<content.size();j++){
-                newFile.add(content.get(j));
-                /*System.out.println("Espacio en memoria: "+(sizeOfMemory));
-                System.out.println("Espacio en memoria: "+(sizeOfHardMemory));
-                System.out.println("Valor actual: "+(content.size()));*/
-                if((sizeOfMemory)>=(0)){
-                    memoryData.add(content.get(j));                    
-                }else if((sizeOfHardMemory)>=(0)){
-                    hardDData.add(content.get(j));                    
-                }else{
-                    System.out.println("no more");
-                    break;                    
-                }
-                
-            }
-            allData.add(newFile);
-            if(flag==1 && sizeOfMemory>0){
-                sizeOfMemory = sizeOfMemory+content.size();
-            }
-        }
+        executedFiles = data;        
+        /*for(int i=0;i<data.size();i++){
+            
+        }*/
         System.out.println(executedFiles.size()+ " Los archivos ejecutados");
         for(int y=0;y<executedFiles.size();y++){
+                     
             System.out.println("Archivo "+y+"===> "+Arrays.toString(executedFiles.get(y)));
-            ArrayList<String> newFile = new ArrayList<String>();
+            //ArrayList<String> newFile = new ArrayList<String>();
             String[] actual= executedFiles.get(y);
             Path path = Paths.get(actual[2]);
             List<String> content = Files.readAllLines(path, StandardCharsets.UTF_8);
@@ -123,6 +97,48 @@ public class Data {
             else{
                 System.out.println("Wrong random");
             }
+            
+            int flag=0;
+            System.out.println("Memoria: " +sizeOfMemory);
+            System.out.println("Memoria Virtual: " +sizeOfHardMemory);
+            ArrayList<String> newFile = new ArrayList<String>();
+            /*String[] actual= data.get(y);
+            Path path = Paths.get(actual[2]);
+            List<String> content = Files.readAllLines(path, StandardCharsets.UTF_8);*/
+            
+            sizeOfMemory = sizeOfMemory-content.size();
+            if(sizeOfMemory<=0){                
+                sizeOfHardMemory= sizeOfHardMemory-content.size();
+                flag =1;
+            }
+            int spaceFlag=0;
+            for(int j=0;j<content.size();j++){
+                newFile.add(content.get(j));
+                /*System.out.println("Espacio en memoria: "+(sizeOfMemory));
+                System.out.println("Espacio en memoria: "+(sizeOfHardMemory));
+                System.out.println("Valor actual: "+(content.size()));*/
+                if((sizeOfMemory)>=(0)){
+                    memoryData.add(content.get(j));
+                    spaceFlag=0;
+                }else if((sizeOfHardMemory)>=(0)){
+                    hardDData.add(content.get(j));
+                    spaceFlag=1;         
+                }else{
+                    System.out.println("no more");
+                    break;                    
+                }
+                
+            }
+            if(spaceFlag==0){
+                memoryFiles.add(fileCounter);
+            }else{
+                hardDFiles.add(fileCounter);
+            }
+            allData.add(newFile);
+            if(flag==1 && sizeOfMemory>0){
+                sizeOfMemory = sizeOfMemory+content.size();
+            }
+            
         }
         System.out.println(allData.size()+" = Lista de archivos");
         //System.out.println(Arrays.toString(firstQueue.toArray())+" = first size");
@@ -132,6 +148,8 @@ public class Data {
         secondQueueData.clear();
         firstQueueObjects.clear();
         secondQueueObjects.clear();*/
+        System.out.println(Arrays.toString(memoryFiles.toArray()));
+        System.out.println(Arrays.toString(hardDFiles.toArray()));
         
         createWorkQueues();
     }

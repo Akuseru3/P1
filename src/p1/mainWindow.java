@@ -466,10 +466,24 @@ public class mainWindow extends javax.swing.JFrame {
         fillN1();
         fillN2();
     }//GEN-LAST:event_btnExecuteActionPerformed
-    private void refreshTable(int file){
+    /*private String getPC(int file,String instruction,ArrayList<Instruction> queue){
+        int flag =0;
+        String next="";
+        for(int i=0;i<queue.size();i++){
+            Instruction actual = queue.get(i);
+            int actualFile = actual.fileNumber;
+            String actualCommand = actual.command;
+            if(flag==0&&(actualFile == file)&&(actualCommand.equals(instruction)))
+                flag=1;
+            if(flag==1)
+        }
+    }*/
+    
+    
+    private void refreshTable(int file,String instruction){
         JTable actual = tables.get(file-1);
         PCB actualBlock = controlBlocks.get(file-1);
-        Object rowData[][] = {{"PC",actualBlock.PC},{"AC",actualBlock.AC},{"IR",actualBlock.IR},{"AX",actualBlock.AX},{"BX",actualBlock.BX},{"CX",actualBlock.CX},{"DX",actualBlock.DX}};
+        Object rowData[][] = {{"PC",actualBlock.PC},{"AC",actualBlock.AC},{"IR",instruction},{"AX",actualBlock.AX},{"BX",actualBlock.BX},{"CX",actualBlock.CX},{"DX",actualBlock.DX}};
         Object columnNames[] = { "Dato", "Valor"};
         DefaultTableModel model = new DefaultTableModel(rowData,columnNames);
         actual.setModel(model);
@@ -512,7 +526,8 @@ public class mainWindow extends javax.swing.JFrame {
                     
                     PCB actual= controlBlocks.get(dataManagment.firstQueueObjects.get(i).fileNumber-1);
                     actual.operation(dataManagment.firstQueueObjects.get(i).command);
-                    refreshTable(dataManagment.firstQueueObjects.get(i).fileNumber);
+                    
+                    refreshTable(dataManagment.firstQueueObjects.get(i).fileNumber,dataManagment.firstQueueObjects.get(i).command);
                     jScrollPane1.revalidate();
                     while(System.currentTimeMillis()-initTime<timeWeight){
                        double tiempo = (timeWeight-(System.currentTimeMillis()-initTime))/1000 + 1;
@@ -576,7 +591,7 @@ public class mainWindow extends javax.swing.JFrame {
                     long initTime = System.currentTimeMillis();
                     PCB actual= controlBlocks.get(dataManagment.secondQueueObjects.get(i).fileNumber-1);
                     actual.operation(dataManagment.secondQueueObjects.get(i).command);
-                    refreshTable(dataManagment.secondQueueObjects.get(i).fileNumber);
+                    refreshTable(dataManagment.secondQueueObjects.get(i).fileNumber,dataManagment.secondQueueObjects.get(i).command);
                     jScrollPane1.revalidate();
                     while(System.currentTimeMillis()-initTime<timeWeight){
                        double tiempo = (timeWeight-(System.currentTimeMillis()-initTime))/1000 + 1;

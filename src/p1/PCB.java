@@ -23,6 +23,7 @@ public class PCB {
     public int DX;
     public int stack;
     public JTable table;
+    public int flag;
     ArrayList<Integer> pila = new ArrayList<Integer>();
     public int file;
     public PCB(int fileI){
@@ -312,6 +313,98 @@ public class PCB {
             case "JUMP":
                 break;
             case "CMP":
+                if(parts[1].equals("AX")){
+                   if(parts[2].equals("AX")){
+                        flag =1;
+                    }
+                    else if(parts[2].equals("BX")){
+                        if(AX == BX)
+                            flag =1;
+                        else
+                            flag =0;
+                    }
+                    else if(parts[2].equals("CX")){
+                        if(AX == CX)
+                            flag =1;
+                        else
+                            flag =0;
+                    }
+                    else{
+                        if(AX == DX)
+                            flag =1;
+                        else
+                            flag =0;
+                    }
+                }
+                else if(parts[1].equals("BX")){
+                    if(parts[2].equals("AX")){
+                        if(BX == AX)
+                            flag =1;
+                        else
+                            flag =0;
+                    }
+                    else if(parts[2].equals("BX")){
+                        flag =1;
+                    }
+                    else if(parts[2].equals("CX")){
+                        if(BX == CX)
+                            flag =1;
+                        else
+                            flag =0;
+                    }
+                    else{
+                        if(BX == DX)
+                            flag =1;
+                        else
+                            flag =0;
+                    }
+                }
+                else if(parts[1].equals("CX")){
+                    if(parts[2].equals("AX")){
+                        if(CX == AX)
+                            flag =1;
+                        else
+                            flag =0;
+                    }
+                    else if(parts[2].equals("BX")){
+                        if(CX == BX)
+                            flag =1;
+                        else
+                            flag =0;
+                    }
+                    else if(parts[2].equals("CX")){
+                        flag =1;
+                    }
+                    else{
+                        if(CX == DX)
+                            flag =1;
+                        else
+                            flag =0;
+                    }
+                }
+                else{
+                    if(parts[2].equals("AX")){
+                        if(DX == AX)
+                            flag =1;
+                        else
+                            flag =0;
+                    }
+                    else if(parts[2].equals("BX")){
+                        if(DX == BX)
+                            flag =1;
+                        else
+                            flag =0;
+                    }
+                    else if(parts[2].equals("CX")){
+                        if(DX == CX)
+                            flag =1;
+                        else
+                            flag =0;
+                    }
+                    else{
+                        flag =1;
+                    }
+                }
                 break;
             case "JE":
                 break;
