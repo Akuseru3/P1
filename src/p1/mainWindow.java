@@ -199,10 +199,10 @@ public class mainWindow extends javax.swing.JFrame {
 
         jScrollPane1.setBackground(new java.awt.Color(0, 0, 0));
         jScrollPane1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(153, 170, 181), 3));
+        jScrollPane1.setAutoscrolls(true);
 
         panelPCB.setBackground(new java.awt.Color(44, 47, 51));
         panelPCB.setToolTipText("");
-        panelPCB.setPreferredSize(new java.awt.Dimension(310, 298));
 
         javax.swing.GroupLayout panelPCBLayout = new javax.swing.GroupLayout(panelPCB);
         panelPCB.setLayout(panelPCBLayout);
@@ -212,12 +212,12 @@ public class mainWindow extends javax.swing.JFrame {
         );
         panelPCBLayout.setVerticalGroup(
             panelPCBLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 298, Short.MAX_VALUE)
+            .addGap(0, 294, Short.MAX_VALUE)
         );
 
         jScrollPane1.setViewportView(panelPCB);
 
-        getContentPane().add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 370, 330, -1));
+        getContentPane().add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 370, 330, 300));
 
         btnLoad.setBackground(new java.awt.Color(153, 170, 181));
         btnLoad.setText("Cargar Archivo");
@@ -483,6 +483,7 @@ public class mainWindow extends javax.swing.JFrame {
                 nucleo1.estado = "En Uso";
                 InstructionConsultor guide = new InstructionConsultor(dataManagment.valuesWeights);
                 for(int i = nucleo1.posInst;i<dataManagment.firstQueueData.size();i++){
+                    jScrollPane1.revalidate();
                     nucleo1.posInst = i;
                     lbCursoN1.setText("Instrucción en Curso: "+(i+1)+". "+dataManagment.firstQueueData.get(i));
                     int timeWeight = guide.checkWeight(dataManagment.firstQueueData.get(i)) * 1000;
@@ -507,6 +508,7 @@ public class mainWindow extends javax.swing.JFrame {
                     lbCursoN1.setText("Instrucción en Curso: Ninguna");
                     lbTiempoN1.setText("Tiempo Restante: --");
                     nucleo1.estado = "En Espera";
+                    nucleo1.posInst +=1;
                 }
                 Thread.currentThread().interrupt();
             }
@@ -540,6 +542,7 @@ public class mainWindow extends javax.swing.JFrame {
                 nucleo2.estado = "En Uso";
                 InstructionConsultor guide = new InstructionConsultor(dataManagment.valuesWeights);
                 for(int i = nucleo2.posInst;i<dataManagment.secondQueueData.size();i++){
+                    jScrollPane1.revalidate();
                     nucleo2.posInst = i;
                     lbCursoN2.setText("Instrucción en Curso: "+(i+1)+". "+dataManagment.secondQueueData.get(i));
                     int timeWeight = guide.checkWeight(dataManagment.secondQueueData.get(i)) * 1000;
@@ -564,6 +567,7 @@ public class mainWindow extends javax.swing.JFrame {
                     lbCursoN2.setText("Instrucción en Curso: Ninguna");
                     lbTiempoN2.setText("Tiempo Restante: --");
                     nucleo2.estado = "En Espera";
+                    nucleo2.posInst +=1;
                 }
                 Thread.currentThread().interrupt();
             }
