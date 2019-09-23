@@ -23,6 +23,7 @@ public class PCB {
     public int DX;
     public int stack;
     public JTable table;
+    ArrayList<Integer> pila = new ArrayList<Integer>();
     public int file;
     public PCB(int fileI){
         PC = 0;
@@ -317,8 +318,28 @@ public class PCB {
             case "JNE":
                 break;
             case "POP":
+                int value = 0;
+                if(pila.size()!=0){
+                    value = pila.get(pila.size()-1);
+                    pila.remove(pila.size()-1);
+                }
+                if(parts[1].equals("AX")){
+                    AX=value;
+                }
+                else if(parts[1].equals("BX")){
+                    BX=value;
+                }
+                else if(parts[1].equals("CX")){
+                    CX=value;
+                }
+                else{
+                    DX=value;
+                }
                 break;
             case "PARAM":
+                for(int i = 1;i<parts.length;i++){
+                    pila.add(Integer.parseInt(parts[i]));
+                }
                 break;
             default:
                 
