@@ -36,11 +36,13 @@ import javax.swing.table.TableModel;
 public class mainWindow extends javax.swing.JFrame {
     String screen = "";
     int y1=0,y2=160;
-    int memory;int hardDMemory;
+    int memory;int hardDMemory;int fileManager = 0;
     ArrayList<Integer> values = new ArrayList<Integer>();
     Data dataManagment;
     Nucleo nucleo1;
     Nucleo nucleo2;
+    ArrayList<JTable> tables = new ArrayList<JTable>(); 
+    ArrayList<PCB> controlBlocks = new ArrayList<PCB>(); 
     DefaultListModel<String> modelMemory = new DefaultListModel<>();
     DefaultListModel<String> modelHARDMemory = new DefaultListModel<>();
     DefaultListModel<String> queue2Model = new DefaultListModel<>();
@@ -383,19 +385,25 @@ public class mainWindow extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(null, "Por favor seleccione un archivo");
         }else{
             for(int i=0;i<(selectedRow.length);i++){
-                
+                fileManager+=1;
                 JLabel label = new JLabel();
                 label.setText("PCB Archivo"+i);
                 label.setFont(new Font("Segoe UI",Font.BOLD, 15));
                 label.setForeground(Color.WHITE);
-                System.out.println(selectedRow[i]);                
+                System.out.println("SELECCIONADOOOO: "+selectedRow[i]);                
                 executedFiles.add(selectedFiles.get(selectedRow[i]));
                 //System.out.println("AHHHHHHH"+Arrays.toString(executedFiles.get(selectedRow[i])));
-                Object rowData[][] = {};
-                Object columnNames[] = { "Column One", "Column Two", "Column Three" };
+                Object rowData[][] = {{"PC",0},{"AC",0},{"IR","-------"},{"AX",0},{"BX",0},{"CX",0},{"DX",0}};
+                Object columnNames[] = { "Dato", "Valor"};
                 JTable table = new JTable(rowData, columnNames);
+                tables.add(table);
+                
+                PCB controlBlock = new PCB(fileManager);
+                controlBlocks.add(controlBlock);
+                System.out.println("FILE: "+fileManager);
+                
                 JScrollPane scrollPane = new JScrollPane(table);
-                scrollPane.setSize(300,150);
+                scrollPane.setSize(300,135);
                 scrollPane.setLocation(0,y1);
                 panelPCB.add(label);
                 panelPCB.add(scrollPane);
@@ -453,9 +461,20 @@ public class mainWindow extends javax.swing.JFrame {
             queue2Model.addElement((queue2Model.getSize()+1)+"."+queue2Info.get(i));
         }
         workQueue2List.setModel(queue2Model);
+        
+        
         fillN1();
         fillN2();
     }//GEN-LAST:event_btnExecuteActionPerformed
+    private void refreshTable(int file){
+        JTable actual = tables.get(file-1);
+        PCB actualBlock = controlBlocks.get(file-1);
+        Object rowData[][] = {{"PC",actualBlock.PC},{"AC",actualBlock.AC},{"IR",actualBlock.IR},{"AX",actualBlock.AX},{"BX",actualBlock.BX},{"CX",actualBlock.CX},{"DX",actualBlock.DX}};
+        Object columnNames[] = { "Dato", "Valor"};
+        DefaultTableModel model = new DefaultTableModel(rowData,columnNames);
+        actual.setModel(model);
+    }
+    
     int fileCounter=0;
     private void fillN1(){
         Nucleo1.getTableHeader().setReorderingAllowed(false);
@@ -477,6 +496,8 @@ public class mainWindow extends javax.swing.JFrame {
         }
     }
     
+    
+    
     private void startN1(){
         Thread t = new Thread(){
             public void run(){
@@ -488,6 +509,11 @@ public class mainWindow extends javax.swing.JFrame {
                     lbCursoN1.setText("Instrucción en Curso: "+(i+1)+". "+dataManagment.firstQueueData.get(i));
                     int timeWeight = guide.checkWeight(dataManagment.firstQueueData.get(i)) * 1000;
                     long initTime = System.currentTimeMillis();
+                    
+                    PCB actual= controlBlocks.get(dataManagment.firstQueueObjects.get(i).fileNumber-1);
+                    actual.operation(dataManagment.firstQueueObjects.get(i).command);
+                    refreshTable(dataManagment.firstQueueObjects.get(i).fileNumber);
+                    jScrollPane1.revalidate();
                     while(System.currentTimeMillis()-initTime<timeWeight){
                        double tiempo = (timeWeight-(System.currentTimeMillis()-initTime))/1000 + 1;
                        lbTiempoN1.setText("Tiempo Restante: "+tiempo+" s");
@@ -503,6 +529,7 @@ public class mainWindow extends javax.swing.JFrame {
                         nucleo1.estado = "Esperando Interrupcion";
                         break;
                     }
+                    
                 }
                 if(nucleo1.estado == "En Uso"){
                     lbCursoN1.setText("Instrucción en Curso: Ninguna");
@@ -547,6 +574,10 @@ public class mainWindow extends javax.swing.JFrame {
                     lbCursoN2.setText("Instrucción en Curso: "+(i+1)+". "+dataManagment.secondQueueData.get(i));
                     int timeWeight = guide.checkWeight(dataManagment.secondQueueData.get(i)) * 1000;
                     long initTime = System.currentTimeMillis();
+                    PCB actual= controlBlocks.get(dataManagment.secondQueueObjects.get(i).fileNumber-1);
+                    actual.operation(dataManagment.secondQueueObjects.get(i).command);
+                    refreshTable(dataManagment.secondQueueObjects.get(i).fileNumber);
+                    jScrollPane1.revalidate();
                     while(System.currentTimeMillis()-initTime<timeWeight){
                        double tiempo = (timeWeight-(System.currentTimeMillis()-initTime))/1000 + 1;
                        lbTiempoN2.setText("Tiempo Restante: "+tiempo+" s");

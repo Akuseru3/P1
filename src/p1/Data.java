@@ -21,7 +21,7 @@ import java.util.Random;
  */
 public class Data {
     
-    int memory;int hardDMemory;
+    int memory;int hardDMemory;int fileCounter =0;
     ArrayList<String> memoryData = new ArrayList<String>();
     ArrayList<String> hardDData = new ArrayList<String>();
     ArrayList<ArrayList<String>> allData = new ArrayList<ArrayList<String>>();
@@ -97,23 +97,25 @@ public class Data {
             Random r = new Random();
             int value = r.nextInt(2)+1;
             System.out.println("Random: "+value);
-            if(value==1){                
+            if(value==1){     
+                fileCounter+=1;
                 //executedFiles.get(y)[0];                
                 firstQueue.add(content);
                 //tempFirstQueue.add(content);
                 ArrayList<Instruction> fileContent = new ArrayList<Instruction>();
                 for(int k=0;k<content.size();k++){
-                    Instruction object = new Instruction(content.get(k),Integer.parseInt(executedFiles.get(y)[0]));
+                    Instruction object = new Instruction(content.get(k),fileCounter);
                     fileContent.add(object);
                 }
                 firstQueueObjectsList.add(fileContent);
             }
             else if(value==2){
+                fileCounter+=1;
                 secondQueue.add(content);
                 //tempSecondQueue.add(content);
                 ArrayList<Instruction> fileContent = new ArrayList<Instruction>();
                 for(int k=0;k<content.size();k++){
-                    Instruction object = new Instruction(content.get(k),Integer.parseInt(executedFiles.get(y)[0]));
+                    Instruction object = new Instruction(content.get(k),fileCounter);
                     fileContent.add(object);
                 }
                 secondQueueObjectsList.add(fileContent);
