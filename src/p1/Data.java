@@ -240,4 +240,161 @@ public class Data {
         secondQueueObjectsList.clear();
     }
     
+    
+    public void adaptationN1(int cant,int posInst){
+        ArrayList<String> adapted = new ArrayList<String>();
+        ArrayList<Instruction> adaptedInst = new ArrayList<Instruction>();
+        for(int i = 0; i<posInst+1; i++){
+            adapted.add(this.firstQueueData.get(i));
+            adaptedInst.add(this.firstQueueObjects.get(i));
+        }
+        int originalFile = firstQueueObjects.get(posInst).fileNumber;
+        ArrayList<Instruction> fInts = getFileInsts(originalFile,this.firstQueueObjects);
+        //allData.get(firstQueueObjects.get(posInst).fileNumber).size()
+        int posInFile = getFileAmount(posInst,originalFile,this.firstQueueObjects,fInts);
+        ArrayList<Integer> intercal = getIntercalados(originalFile,this.firstQueueObjects);
+        int adaptedPos = posInFile-(cant);
+        if(adaptedPos<0){
+            adaptedPos = 0;
+        }
+        System.out.println(adaptedPos);
+        while(true){
+            if(adaptedPos == fInts.size() || posInst == this.firstQueueObjects.size()){
+                for(int i = adaptedPos;i<fInts.size();i++){
+                    adapted.add(fInts.get(i).command);
+                    adaptedInst.add(fInts.get(i));
+                }
+                break;
+            }
+            if(originalFile == firstQueueObjects.get(posInst).fileNumber){
+                
+                adapted.add(fInts.get(adaptedPos).command);
+                adaptedInst.add(fInts.get(adaptedPos));
+                adaptedPos+=1;
+                posInst+=1;
+            }
+            else if(intercal.contains(firstQueueObjects.get(posInst).fileNumber)){
+                adapted.add(firstQueueObjects.get(posInst).command);
+                adaptedInst.add(firstQueueObjects.get(posInst));
+                posInst+=1;
+            }
+            else{
+                for(int i = adaptedPos;i<fInts.size();i++){
+                    adapted.add(fInts.get(i).command);
+                    adaptedInst.add(fInts.get(i));
+                }
+                break;
+            }
+        }
+        for(int i = posInst;i<firstQueueObjects.size();i++){
+            adapted.add(this.firstQueueData.get(i));
+            adaptedInst.add(this.firstQueueObjects.get(i));
+        }
+        this.firstQueueData = adapted;
+        this.firstQueueObjects = adaptedInst;
+    }
+    
+    
+    
+    public void adaptationN2(int cant,int posInst){
+        System.out.println(cant);
+        System.out.println(posInst);
+        ArrayList<String> adapted = new ArrayList<String>();
+        ArrayList<Instruction> adaptedInst = new ArrayList<Instruction>();
+        for(int i = 0; i<posInst+1; i++){
+            adapted.add(this.secondQueueData.get(i));
+            adaptedInst.add(this.secondQueueObjects.get(i));
+        }
+        int originalFile = secondQueueObjects.get(posInst).fileNumber;
+        ArrayList<Instruction> fInts = getFileInsts(originalFile,this.secondQueueObjects);
+        int posInFile = getFileAmount(posInst,originalFile,this.secondQueueObjects,fInts);
+        ArrayList<Integer> intercal = getIntercalados(originalFile,this.secondQueueObjects);
+        int adaptedPos = posInFile-(cant);
+        if(adaptedPos<0){
+            adaptedPos = 0;
+        }
+        while(true){
+            if(adaptedPos == fInts.size() || posInst == this.secondQueueObjects.size()){
+                for(int i = adaptedPos;i<fInts.size();i++){
+                    adapted.add(fInts.get(i).command);
+                    adaptedInst.add(fInts.get(i));
+                }
+                break;
+            }
+            if(originalFile == secondQueueObjects.get(posInst).fileNumber){
+                adapted.add(fInts.get(adaptedPos).command);
+                adaptedInst.add(fInts.get(adaptedPos));
+                posInst+=1;
+                adaptedPos+=1;
+            }
+            else if(intercal.contains(secondQueueObjects.get(posInst).fileNumber)){
+                
+                adapted.add(secondQueueObjects.get(posInst).command);
+                adaptedInst.add(secondQueueObjects.get(posInst));
+                posInst+=1;
+            }
+            else{
+                for(int i = adaptedPos;i<fInts.size();i++){
+                    adapted.add(fInts.get(i).command);
+                    adaptedInst.add(fInts.get(i));
+                }
+                break;
+            }
+        }
+        for(int i = posInst;i<secondQueueObjects.size();i++){
+            adapted.add(this.secondQueueData.get(i));
+            adaptedInst.add(this.secondQueueObjects.get(i));
+        }
+        this.secondQueueData = adapted;
+        this.secondQueueObjects = adaptedInst;
+    }
+    
+    private ArrayList<Instruction> getFileInsts(int file, ArrayList<Instruction> used){
+        ArrayList<Instruction> newList = new ArrayList<Instruction>();
+        for(int i=0;i<used.size();i++){
+            if(used.get(i).fileNumber == file){
+                newList.add(used.get(i));
+            }
+            if(newList.size()>allData.get(file-1).size()){
+                ArrayList<Instruction> newnewList = new ArrayList<Instruction>();
+                newnewList.add(newList.get(newList.size()-1));
+                newList = newnewList;
+            }
+        }
+        return newList;
+    }
+    
+    private int getFileAmount(int pos,int file, ArrayList<Instruction> used, ArrayList<Instruction> total){
+        int cont = 0;
+        for(int i=0;i<pos;i++){
+            if(used.get(i).fileNumber == file){
+                cont+=1;
+            }
+            if(cont>total.size()){
+                cont=0;
+            }
+        }
+        return cont;
+    }
+    
+    private ArrayList<Integer> getIntercalados(int file, ArrayList<Instruction> used){
+        ArrayList<Integer> newList = new ArrayList<Integer>();
+        boolean flag = false;
+        for(int i=0;i<used.size();i++){
+            if(used.get(i).fileNumber == file){
+                if(flag){
+                    break;
+                }
+                else{
+                    flag = true;
+                }
+            }
+            else{
+                if(flag){
+                    newList.add(used.get(i).fileNumber);
+                }
+            }
+        }
+        return newList;
+    }
 }

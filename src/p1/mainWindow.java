@@ -526,7 +526,7 @@ public class mainWindow extends javax.swing.JFrame {
                     
                     PCB actual= controlBlocks.get(dataManagment.firstQueueObjects.get(i).fileNumber-1);
                     actual.operation(dataManagment.firstQueueObjects.get(i).command);
-                    
+                    checkJumpsN1(dataManagment.firstQueueData.get(i));
                     refreshTable(dataManagment.firstQueueObjects.get(i).fileNumber,dataManagment.firstQueueObjects.get(i).command);
                     jScrollPane1.revalidate();
                     while(System.currentTimeMillis()-initTime<timeWeight){
@@ -591,6 +591,7 @@ public class mainWindow extends javax.swing.JFrame {
                     long initTime = System.currentTimeMillis();
                     PCB actual= controlBlocks.get(dataManagment.secondQueueObjects.get(i).fileNumber-1);
                     actual.operation(dataManagment.secondQueueObjects.get(i).command);
+                    checkJumpsN2(dataManagment.secondQueueData.get(i));
                     refreshTable(dataManagment.secondQueueObjects.get(i).fileNumber,dataManagment.secondQueueObjects.get(i).command);
                     jScrollPane1.revalidate();
                     while(System.currentTimeMillis()-initTime<timeWeight){
@@ -621,7 +622,39 @@ public class mainWindow extends javax.swing.JFrame {
         t2.start();
     }
     
+    private void checkJumpsN1(String instruction){
+        String[] parts = instruction.split(" ");
+        String command = parts[0];
+        switch(command){
+            case "JUMP":
+                String act = parts[1];
+                String num = act.substring(1, act.length());
+                System.out.println(num);
+                String type = act.substring(0,1);
+                dataManagment.adaptationN1(Integer.parseInt(num),nucleo1.posInst);
+                fillN1();
+                break;
+            default:
+                break;
+        }
+    }
     
+    private void checkJumpsN2(String instruction){
+        String[] parts = instruction.split(" ");
+        String command = parts[0];
+        switch(command){
+            case "JUMP":
+                String act = parts[1];
+                String num = act.substring(1, act.length());
+                System.out.println(num);
+                String type = act.substring(0,1);
+                dataManagment.adaptationN2(Integer.parseInt(num),nucleo2.posInst);
+                fillN2();
+                break;
+            default:
+                break;
+        }
+    }
     
     private void btnLoadActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoadActionPerformed
         JFileChooser fileChooser = new JFileChooser();

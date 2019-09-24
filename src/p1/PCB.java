@@ -35,7 +35,8 @@ public class PCB {
         CX = 0;
         DX = 0;
         file = fileI;
-    }
+    }   
+    
     public void operation(String instruction){
         String[] parts = instruction.split("\\s+|,");
         System.out.println(Arrays.toString(parts));
