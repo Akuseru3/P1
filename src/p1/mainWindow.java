@@ -108,6 +108,10 @@ public class mainWindow extends javax.swing.JFrame {
         lbTiempoN2 = new javax.swing.JLabel();
         lbCursoN2 = new javax.swing.JLabel();
         lbCursoN1 = new javax.swing.JLabel();
+        lbTotalTiempoN2 = new javax.swing.JLabel();
+        lbTotalTiempoN1 = new javax.swing.JLabel();
+        lbTiempoN6 = new javax.swing.JLabel();
+        lbTiempoN4 = new javax.swing.JLabel();
         lbTiempoN1 = new javax.swing.JLabel();
         lblBackground = new javax.swing.JLabel();
 
@@ -156,7 +160,7 @@ public class mainWindow extends javax.swing.JFrame {
         Nucleo2.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_OFF);
         jScrollPane7.setViewportView(Nucleo2);
 
-        getContentPane().add(jScrollPane7, new org.netbeans.lib.awtextra.AbsoluteConstraints(750, 640, 480, 60));
+        getContentPane().add(jScrollPane7, new org.netbeans.lib.awtextra.AbsoluteConstraints(700, 640, 480, 60));
 
         Nucleo1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -171,7 +175,7 @@ public class mainWindow extends javax.swing.JFrame {
         jScrollPane5.setViewportView(Nucleo1);
         Nucleo1.getAccessibleContext().setAccessibleName("");
 
-        getContentPane().add(jScrollPane5, new org.netbeans.lib.awtextra.AbsoluteConstraints(750, 520, 480, 60));
+        getContentPane().add(jScrollPane5, new org.netbeans.lib.awtextra.AbsoluteConstraints(700, 520, 480, 60));
 
         txtKeyboard.setBackground(new java.awt.Color(44, 47, 51));
         txtKeyboard.setColumns(20);
@@ -344,6 +348,26 @@ public class mainWindow extends javax.swing.JFrame {
         lbCursoN1.setText("Instrucción en Curso: Ninguna");
         getContentPane().add(lbCursoN1, new org.netbeans.lib.awtextra.AbsoluteConstraints(750, 490, -1, -1));
 
+        lbTotalTiempoN2.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        lbTotalTiempoN2.setForeground(new java.awt.Color(255, 255, 255));
+        lbTotalTiempoN2.setText("0");
+        getContentPane().add(lbTotalTiempoN2, new org.netbeans.lib.awtextra.AbsoluteConstraints(1190, 650, -1, -1));
+
+        lbTotalTiempoN1.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        lbTotalTiempoN1.setForeground(new java.awt.Color(255, 255, 255));
+        lbTotalTiempoN1.setText("0");
+        getContentPane().add(lbTotalTiempoN1, new org.netbeans.lib.awtextra.AbsoluteConstraints(1190, 530, -1, -1));
+
+        lbTiempoN6.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        lbTiempoN6.setForeground(new java.awt.Color(255, 255, 255));
+        lbTiempoN6.setText("S Transcurridos");
+        getContentPane().add(lbTiempoN6, new org.netbeans.lib.awtextra.AbsoluteConstraints(1190, 680, -1, -1));
+
+        lbTiempoN4.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
+        lbTiempoN4.setForeground(new java.awt.Color(255, 255, 255));
+        lbTiempoN4.setText("S Transcurridos");
+        getContentPane().add(lbTiempoN4, new org.netbeans.lib.awtextra.AbsoluteConstraints(1190, 560, -1, -1));
+
         lbTiempoN1.setFont(new java.awt.Font("Segoe UI", 1, 12)); // NOI18N
         lbTiempoN1.setForeground(new java.awt.Color(255, 255, 255));
         lbTiempoN1.setText("Tiempo Restante: --");
@@ -505,7 +529,8 @@ public class mainWindow extends javax.swing.JFrame {
             works[i] = dataManagment.firstQueueData.get(i);
         }
         dtm.addRow(works);
-        if(nucleo1.estado == "En Espera"){
+        if(nucleo1.estado.equals("En Espera")){
+            lbTotalTiempoN1.setText("0");
             startN1();
         }
     }
@@ -513,11 +538,14 @@ public class mainWindow extends javax.swing.JFrame {
     
     
     private void startN1(){
+        System.out.println(nucleo1.posInst);
         Thread t = new Thread(){
             public void run(){
+                if(nucleo1.posInst != dataManagment.firstQueueData.size()){
                 nucleo1.estado = "En Uso";
                 InstructionConsultor guide = new InstructionConsultor(dataManagment.valuesWeights);
                 for(int i = nucleo1.posInst;i<dataManagment.firstQueueData.size();i++){
+
                     jScrollPane1.revalidate();
                     nucleo1.posInst = i;
                     lbCursoN1.setText("Instrucción en Curso: "+(i+1)+". "+dataManagment.firstQueueData.get(i));
@@ -525,6 +553,7 @@ public class mainWindow extends javax.swing.JFrame {
                     long initTime = System.currentTimeMillis();
                     
                     PCB actual= controlBlocks.get(dataManagment.firstQueueObjects.get(i).fileNumber-1);
+                    actual.newPc(dataManagment.prueba(dataManagment.firstQueueObjects.get(i), i, dataManagment.firstQueueObjects));
                     actual.operation(dataManagment.firstQueueObjects.get(i).command);
                     checkJumpsN1(dataManagment.firstQueueData.get(i));
                     refreshTable(dataManagment.firstQueueObjects.get(i).fileNumber,dataManagment.firstQueueObjects.get(i).command);
@@ -537,13 +566,19 @@ public class mainWindow extends javax.swing.JFrame {
                         lbTiempoN1.setText("Tiempo Restante: --");
                         nucleo1.estado = "En Interrupcion";
                         txtScreen.setText(txtScreen.getText()+guide.interruptionInfo(dataManagment.firstQueueData.get(i)));
+                        nucleo1.timePass = System.currentTimeMillis();
                         break;
                     }
                     if(guide.isInterrupt(dataManagment.firstQueueObjects, i) && nucleo2.estado == "En Interrupcion"){
                         lbTiempoN1.setText("Tiempo Restante: --");
                         nucleo1.estado = "Esperando Interrupcion";
+                        nucleo1.timePass = System.currentTimeMillis();
                         break;
                     }
+                    int timeTot = Integer.parseInt(lbTotalTiempoN1.getText());
+                    timeTot+= timeWeight/1000;
+                    
+                    lbTotalTiempoN1.setText(String.valueOf(timeTot));
                     
                 }
                 if(nucleo1.estado == "En Uso"){
@@ -553,6 +588,7 @@ public class mainWindow extends javax.swing.JFrame {
                     nucleo1.posInst +=1;
                 }
                 Thread.currentThread().interrupt();
+            }
             }
         };
         t.start();
@@ -573,14 +609,17 @@ public class mainWindow extends javax.swing.JFrame {
             works[i] = dataManagment.secondQueueData.get(i);
         }
         dtm.addRow(works);
-        if(nucleo2.estado == "En Espera"){
+        if(nucleo2.estado.equals("En Espera")){
+            lbTotalTiempoN2.setText("0");
             startN2();
         }
     }
     
     private void startN2(){
+        System.out.println(nucleo2.posInst);
         Thread t2 = new Thread(){
             public void run(){
+                if(nucleo2.posInst != dataManagment.secondQueueData.size()){
                 nucleo2.estado = "En Uso";
                 InstructionConsultor guide = new InstructionConsultor(dataManagment.valuesWeights);
                 for(int i = nucleo2.posInst;i<dataManagment.secondQueueData.size();i++){
@@ -590,6 +629,7 @@ public class mainWindow extends javax.swing.JFrame {
                     int timeWeight = guide.checkWeight(dataManagment.secondQueueData.get(i)) * 1000;
                     long initTime = System.currentTimeMillis();
                     PCB actual= controlBlocks.get(dataManagment.secondQueueObjects.get(i).fileNumber-1);
+                    actual.newPc(dataManagment.prueba(dataManagment.secondQueueObjects.get(i), i, dataManagment.secondQueueObjects));
                     actual.operation(dataManagment.secondQueueObjects.get(i).command);
                     checkJumpsN2(dataManagment.secondQueueData.get(i));
                     refreshTable(dataManagment.secondQueueObjects.get(i).fileNumber,dataManagment.secondQueueObjects.get(i).command);
@@ -602,13 +642,19 @@ public class mainWindow extends javax.swing.JFrame {
                         lbTiempoN2.setText("Tiempo Restante: --");
                         nucleo2.estado = "En Interrupcion";
                         txtScreen.setText(txtScreen.getText()+guide.interruptionInfo(dataManagment.secondQueueData.get(i)));
+                        nucleo2.timePass = System.currentTimeMillis();
                         break;
                     }
                     if(guide.isInterrupt(dataManagment.secondQueueObjects, i) && nucleo1.estado == "En Interrupcion"){
                         lbTiempoN2.setText("Tiempo Restante: --");
                         nucleo2.estado = "Esperando Interrupcion";
+                        nucleo2.timePass = System.currentTimeMillis();
                         break;
                     }
+                    int timeTot = Integer.parseInt(lbTotalTiempoN2.getText());
+                    timeTot+= timeWeight/1000;
+                    
+                    lbTotalTiempoN2.setText(String.valueOf(timeTot));
                 }
                 if(nucleo2.estado == "En Uso"){
                     lbCursoN2.setText("Instrucción en Curso: Ninguna");
@@ -617,6 +663,7 @@ public class mainWindow extends javax.swing.JFrame {
                     nucleo2.posInst +=1;
                 }
                 Thread.currentThread().interrupt();
+            }
             }
         };
         t2.start();
@@ -631,8 +678,57 @@ public class mainWindow extends javax.swing.JFrame {
                 String num = act.substring(1, act.length());
                 System.out.println(num);
                 String type = act.substring(0,1);
-                dataManagment.adaptationN1(Integer.parseInt(num),nucleo1.posInst);
+                if(type.equals("-")){
+                    PCB actual= controlBlocks.get(dataManagment.firstQueueObjects.get(nucleo1.posInst).fileNumber-1);
+                    actual.PC -= Integer.parseInt(num);
+                    dataManagment.adaptationN1(Integer.parseInt(num),nucleo1.posInst);
+                }
+                else{
+                    PCB actual= controlBlocks.get(dataManagment.firstQueueObjects.get(nucleo1.posInst).fileNumber-1);
+                    actual.PC += Integer.parseInt(num);
+                    dataManagment.PadaptationN1(Integer.parseInt(num),nucleo1.posInst);
+                }
                 fillN1();
+                break;
+            case "JNE":
+                if(this.controlBlocks.get(dataManagment.firstQueueObjects.get(nucleo1.posInst).fileNumber-1).flag == 0){
+                    act = parts[1];
+                    num = act.substring(1, act.length());
+                    System.out.println(num);
+                    type = act.substring(0,1);
+                    if(type.equals("-")){
+                        PCB actual= controlBlocks.get(dataManagment.firstQueueObjects.get(nucleo1.posInst).fileNumber-1);
+                        actual.PC -= Integer.parseInt(num);
+                        dataManagment.adaptationN1(Integer.parseInt(num),nucleo1.posInst);
+                    }
+                    else{
+                        PCB actual= controlBlocks.get(dataManagment.firstQueueObjects.get(nucleo1.posInst).fileNumber-1);
+                        actual.PC += Integer.parseInt(num);
+                        dataManagment.PadaptationN1(Integer.parseInt(num),nucleo1.posInst);
+                    }
+                    fillN1();
+                    this.controlBlocks.get(dataManagment.firstQueueObjects.get(nucleo1.posInst).fileNumber-1).flag = -1;
+                }
+                break;
+            case "JE":
+                if(this.controlBlocks.get(dataManagment.firstQueueObjects.get(nucleo1.posInst).fileNumber-1).flag == 1){
+                    act = parts[1];
+                    num = act.substring(1, act.length());
+                    System.out.println(num);
+                    type = act.substring(0,1);
+                    if(type.equals("-")){
+                        PCB actual= controlBlocks.get(dataManagment.firstQueueObjects.get(nucleo1.posInst).fileNumber-1);
+                        actual.PC -= Integer.parseInt(num);
+                        dataManagment.adaptationN1(Integer.parseInt(num),nucleo1.posInst);
+                    }
+                    else{
+                        PCB actual= controlBlocks.get(dataManagment.firstQueueObjects.get(nucleo1.posInst).fileNumber-1);
+                        actual.PC += Integer.parseInt(num);
+                        dataManagment.PadaptationN1(Integer.parseInt(num),nucleo1.posInst);
+                    }
+                    fillN1();
+                    this.controlBlocks.get(dataManagment.firstQueueObjects.get(nucleo1.posInst).fileNumber-1).flag = -1;
+                }
                 break;
             default:
                 break;
@@ -642,14 +738,66 @@ public class mainWindow extends javax.swing.JFrame {
     private void checkJumpsN2(String instruction){
         String[] parts = instruction.split(" ");
         String command = parts[0];
+        String act;
+        String num;
+        String type;
         switch(command){
             case "JUMP":
-                String act = parts[1];
-                String num = act.substring(1, act.length());
+                act = parts[1];
+                num = act.substring(1, act.length());
                 System.out.println(num);
-                String type = act.substring(0,1);
-                dataManagment.adaptationN2(Integer.parseInt(num),nucleo2.posInst);
+                type = act.substring(0,1);
+                if(type.equals("-")){
+                    PCB actual= controlBlocks.get(dataManagment.secondQueueObjects.get(nucleo2.posInst).fileNumber-1);
+                    actual.PC -= Integer.parseInt(num);
+                    dataManagment.adaptationN2(Integer.parseInt(num),nucleo2.posInst);
+                }
+                else{
+                    PCB actual= controlBlocks.get(dataManagment.secondQueueObjects.get(nucleo2.posInst).fileNumber-1);
+                    actual.PC += Integer.parseInt(num);
+                    dataManagment.PadaptationN2(Integer.parseInt(num),nucleo2.posInst);
+                }
                 fillN2();
+                break;
+            case "JNE":
+                if(this.controlBlocks.get(dataManagment.secondQueueObjects.get(nucleo2.posInst).fileNumber-1).flag == 0){
+                    act = parts[1];
+                    num = act.substring(1, act.length());
+                    System.out.println(num);
+                    type = act.substring(0,1);
+                    if(type.equals("-")){
+                        PCB actual= controlBlocks.get(dataManagment.secondQueueObjects.get(nucleo2.posInst).fileNumber-1);
+                        actual.PC -= Integer.parseInt(num);
+                        dataManagment.adaptationN2(Integer.parseInt(num),nucleo2.posInst);
+                    }
+                    else{
+                        PCB actual= controlBlocks.get(dataManagment.secondQueueObjects.get(nucleo2.posInst).fileNumber-1);
+                        actual.PC += Integer.parseInt(num);
+                        dataManagment.PadaptationN2(Integer.parseInt(num),nucleo2.posInst);
+                    }
+                    fillN2();
+                    this.controlBlocks.get(dataManagment.secondQueueObjects.get(nucleo2.posInst).fileNumber-1).flag =-1;
+                }
+                break;
+            case "JE":
+                if(this.controlBlocks.get(dataManagment.secondQueueObjects.get(nucleo2.posInst).fileNumber-1).flag == 1){
+                    act = parts[1];
+                    num = act.substring(1, act.length());
+                    System.out.println(num);
+                    type = act.substring(0,1);
+                    if(type.equals("-")){
+                        PCB actual= controlBlocks.get(dataManagment.secondQueueObjects.get(nucleo2.posInst).fileNumber-1);
+                        actual.PC -= Integer.parseInt(num);
+                        dataManagment.adaptationN2(Integer.parseInt(num),nucleo2.posInst);
+                    }
+                    else{
+                        PCB actual= controlBlocks.get(dataManagment.secondQueueObjects.get(nucleo2.posInst).fileNumber-1);
+                        actual.PC += Integer.parseInt(num);
+                        dataManagment.PadaptationN2(Integer.parseInt(num),nucleo2.posInst);
+                    }
+                    fillN2();
+                    this.controlBlocks.get(dataManagment.secondQueueObjects.get(nucleo2.posInst).fileNumber-1).flag = -1;
+                }
                 break;
             default:
                 break;
@@ -682,6 +830,12 @@ public class mainWindow extends javax.swing.JFrame {
             if(nucleo1.estado.equals("En Interrupcion")){
                 nucleo1.posInst += 1;
                 nucleo1.estado = "En Uso";
+                long actual = System.currentTimeMillis();
+                actual = (actual - nucleo1.timePass)/1000;
+                txtScreen.setText(txtScreen.getText()+"Se tardo "+actual+" segundos en responder la interrupcion.\n");
+                int timeTot = Integer.parseInt(lbTotalTiempoN1.getText());
+                timeTot+= actual; 
+                lbTotalTiempoN1.setText(String.valueOf(timeTot));
                 startN1();
                 if(nucleo2.estado.equals("Esperando Interrupcion")){
                     nucleo2.estado = "En Interrupcion";
@@ -691,6 +845,12 @@ public class mainWindow extends javax.swing.JFrame {
             if(nucleo2.estado.equals("En Interrupcion")){
                 nucleo2.posInst += 1;
                 nucleo2.estado = "En Uso";
+                long actual = System.currentTimeMillis();
+                actual = (actual - nucleo2.timePass)/1000;
+                txtScreen.setText(txtScreen.getText()+"Se tardo "+actual+" segundos en responder la interrupcion.\n");
+                int timeTot = Integer.parseInt(lbTotalTiempoN2.getText());
+                timeTot+= actual; 
+                lbTotalTiempoN2.setText(String.valueOf(timeTot));
                 startN2();
                 if(nucleo1.estado.equals("Esperando Interrupcion")){
                     nucleo1.estado = "En Interrupcion";
@@ -765,6 +925,10 @@ public class mainWindow extends javax.swing.JFrame {
     private javax.swing.JLabel lbCursoN2;
     private javax.swing.JLabel lbTiempoN1;
     private javax.swing.JLabel lbTiempoN2;
+    private javax.swing.JLabel lbTiempoN4;
+    private javax.swing.JLabel lbTiempoN6;
+    private javax.swing.JLabel lbTotalTiempoN1;
+    private javax.swing.JLabel lbTotalTiempoN2;
     private javax.swing.JLabel lblBackground;
     private javax.swing.JList<String> listHARDMemory;
     private javax.swing.JList<String> listMemory;

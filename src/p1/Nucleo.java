@@ -14,6 +14,7 @@ import java.util.ArrayList;
 public class Nucleo {
     public String estado;
     public int posInst;
+    public long timePass;
     Nucleo(String estado, int pos){
         this.estado = estado;
         posInst = pos;

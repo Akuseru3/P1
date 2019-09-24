@@ -35,7 +35,12 @@ public class PCB {
         CX = 0;
         DX = 0;
         file = fileI;
+        flag = -1;
     }   
+    
+    public void newPc(int nuevo){
+        PC = nuevo;
+    }
     
     public void operation(String instruction){
         String[] parts = instruction.split("\\s+|,");
